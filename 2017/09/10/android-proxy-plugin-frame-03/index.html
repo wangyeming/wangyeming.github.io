@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="上一篇文章我们介绍了如何偷梁换日，用HostBaseActivity去在Activity运行中代理PluginBaseActivity，并让PluginBaseActivity具有Android中Activity组件的生命周期。也同时留了一个问题，插件的资源加载。这篇文章就和大家一起分享下，插件资源加载涉及到的知识点和解决方案。">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊Android的静态代理插件框架原理[03]--Activity静态代理之资源加载(上)">
+<meta property="og:url" content="http://wangyeming.github.com/2017/09/10/android-proxy-plugin-frame-03/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="上一篇文章我们介绍了如何偷梁换日，用HostBaseActivity去在Activity运行中代理PluginBaseActivity，并让PluginBaseActivity具有Android中Activity组件的生命周期。也同时留了一个问题，插件的资源加载。这篇文章就和大家一起分享下，插件资源加载涉及到的知识点和解决方案。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wangyeming.github.com/img/2017-09-10-android-proxy-plugin-frame-03-01.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2017-09-10-android-proxy-plugin-frame-03-02.png">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊Android的静态代理插件框架原理[03]--Activity静态代理之资源加载(上)">
+<meta name="twitter:description" content="上一篇文章我们介绍了如何偷梁换日，用HostBaseActivity去在Activity运行中代理PluginBaseActivity，并让PluginBaseActivity具有Android中Activity组件的生命周期。也同时留了一个问题，插件的资源加载。这篇文章就和大家一起分享下，插件资源加载涉及到的知识点和解决方案。">
+<meta name="twitter:image" content="http://wangyeming.github.com/img/2017-09-10-android-proxy-plugin-frame-03-01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2017/09/10/android-proxy-plugin-frame-03/">
+
+
+
+
+
+  <title>聊聊Android的静态代理插件框架原理[03]--Activity静态代理之资源加载(上) | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2017/09/10/android-proxy-plugin-frame-03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊聊Android的静态代理插件框架原理[03]--Activity静态代理之资源加载(上)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-10T17:42:04+08:00">
+                2017-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android-静态代理插件框架/" itemprop="url" rel="index">
+                    <span itemprop="name">Android 静态代理插件框架</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇文章我们介绍了如何偷梁换日，用HostBaseActivity去在Activity运行中代理PluginBaseActivity，并让PluginBaseActivity具有Android中Activity组件的生命周期。也同时留了一个问题，插件的资源加载。这篇文章就和大家一起分享下，插件资源加载涉及到的知识点和解决方案。</p>
+<p><img src="/img/2017-09-10-android-proxy-plugin-frame-03-01.png" alt><br><img src="/img/2017-09-10-android-proxy-plugin-frame-03-02.png" alt></p>
+<a id="more"></a>
+
+<h1 id="Activity静态代理之资源加载"><a href="#Activity静态代理之资源加载" class="headerlink" title="Activity静态代理之资源加载"></a>Activity静态代理之资源加载</h1><p>在我介绍解决方案前，我们有必要一起了解下Android的资源相关的知识。</p>
+<p>Android应用程序主要由两部分内容组成：代码和资源。资源主要指的是与UI相关的图片啊，布局啊，字符串啊等文件。</p>
+<p>Android应用程序资源可以分为两大类，分别是assets和res。</p>
+<p>assets类资源放在工程根目录的Assets子目录下，这些文件最终会被原装不动地打包在apk文件中。如果我们要在程序中访问这些文件，那么就需要指定文件名来访问。</p>
+<p>res资源也比较好理解，上一个Android官网的介绍 <a href="https://developer.android.com/guide/topics/resources/available-resources.html" target="_blank" rel="noopener">Resource Types</a></p>
+<pre><code>Animation Resources
+    Define pre-determined animations.
+    Tween animations are saved in res/anim/ and accessed from the R.anim class.
+    Frame animations are saved in res/drawable/ and accessed from the R.drawable class.
+
+Color State List Resource
+    Define a color resources that changes based on the View state.
+    Saved in res/color/ and accessed from the R.color class.
+
+Drawable Resources
+    Define various graphics with bitmaps or XML.
+    Saved in res/drawable/ and accessed from the R.drawable class.
+
+Layout Resource
+    Define the layout for your application UI.
+    Saved in res/layout/ and accessed from the R.layout class.
+
+Menu Resource
+    Define the contents of your application menus.
+    Saved in res/menu/ and accessed from the R.menu class.
+    String Resources
+
+Define strings, string arrays, and plurals (and include string formatting and styling).
+    Saved in res/values/ and accessed from the R.string, R.array, and R.plurals classes.
+    Style Resource
+
+Define the look and format for UI elements.
+    Saved in res/values/ and accessed from the R.style class.
+    Font Resources
+
+Define font families and include custom fonts in XML.
+    Saved in res/font/ and accessed from the R.font class.
+
+More Resource Types
+    Define values such as booleans, integers, dimensions, colors, and other arrays.
+    Saved in res/values/ but each accessed from unique R sub-classes (such as R.bool, R.integer, R.dimen, etc.).</code></pre><p>在编译打包的过程中，AAPT会把资源文件打包成二进制文件，并对除了assets资源之外所有的资源赋予一个资源ID常量，并且会生成一个资源索引表resources.arsc。<br>我们熟知的apk文件其实只是一个zip压缩文件，里面有包含全部java类的文件(classes.dex)和全部编译后的资源文件(resources.arsc).</p>
+<p>了解了Android中的资源，我们接下来看一下，我们平时到底是如何使用这些资源的呢？</p>
+<p>这里就必须要提到两个类，<a href="https://developer.android.com/reference/android/content/res/AssetManager.html" target="_blank" rel="noopener">AssetManager</a>和<a href="https://developer.android.com/reference/android/content/res/Resources.html" target="_blank" rel="noopener">Resources</a></p>
+<p>简单来说，AssetManager用于访问应用原始的asset文件，相对来说是一个封装层次较低的类。而Resources则提供了高封装层次的API用于获取类型数据，</p>
+<p>现在我们可以解释上一篇文章末尾提出的问题了，为什么插件里的资源，宿主里无法直接访问呢？很简单，因为宿主apk打包的时候，resources.arsc文件里面并没有插件里面的资源文件ID，也就访问不到插件里面的资源。也就是说，用宿主的AssetManager和Resources实例是get不到插件的资源的。</p>
+<p>聪明的小伙伴已经想到了，那既然宿主的AssetManager和Resources实例不行，那我们用插件的的AssetManager和Resources实例不就可以了？！</p>
+<p>是的，『静态代理』的另一层含义就是，访问插件资源的时候，用插件的AssetManager和Resources代理宿主的AssetManager和Resources。上代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> AssetManager <span class="title">createAssetManager</span><span class="params">(String dexPath)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        AssetManager assetManager = AssetManager.class.newInstance();</span><br><span class="line">        Method addAssetPath = assetManager.getClass().getMethod(<span class="string">"addAssetPath"</span>, String.class);</span><br><span class="line">        addAssetPath.invoke(assetManager, dexPath);</span><br><span class="line">        <span class="keyword">return</span> assetManager;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Resources <span class="title">createResources</span><span class="params">(AssetManager assetManager)</span> </span>&#123;</span><br><span class="line">    Resources superRes = mAppContext.getResources();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Resources(assetManager,</span><br><span class="line">            superRes.getDisplayMetrics(), superRes.getConfiguration());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在HostActivity中，替换对应的方法为插件的AssetManager和Resources</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HostBaseActivity</span> <span class="keyword">extends</span> <span class="title">FragmentActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Resources <span class="title">getResources</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//返回插件的Resources</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> AssetManager <span class="title">getAssets</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//返回插件的AssetManager</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...    </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这下，宿主里可以获取到插件里对应的资源了。不过插件化带来的资源加载的问题远没那么简单。比如说我们知道，Android系统中通过LayoutInflater加载布局会根据view的包名对view进行相应缓存，在app开发中本来是没有任何问题的。但是我们插件开发，加载了多个apk的代码和资源，势必会有可能不同的插件下不同的view恰好有相同的包名，如果统一用默认的LayoutInflater的话,势必会有问题。下一篇，我们结合LayoutInflater缓存机制，介绍一下解决方案。谢谢大家。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/10/android-proxy-plugin-frame-02/" rel="next" title="聊聊Android的静态代理插件框架原理[02]--Activity静态代理之生命周期">
+                <i class="fa fa-chevron-left"></i> 聊聊Android的静态代理插件框架原理[02]--Activity静态代理之生命周期
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/11/android-proxy-plugin-frame-04/" rel="prev" title="聊聊Android的静态代理插件框架原理[04]--Activity静态代理之资源加载(下)">
+                聊聊Android的静态代理插件框架原理[04]--Activity静态代理之资源加载(下) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Activity静态代理之资源加载"><span class="nav-number">1.</span> <span class="nav-text">Activity静态代理之资源加载</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

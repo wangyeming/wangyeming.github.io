@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="在Java的知识体系中，Java平台安全是很重要的一部分。作为Android开发者，其实这部分知识对我们来说既陌生又熟悉。说熟悉，Android中Apk打包离不开的jks签名文件，Android 6.0提供的指纹识别接口的调用(Demo), 都是建立在Android平台安全的体系上。而Android平台安全又是建立在Java平台安全的这个坚实的基础上。说陌生，对于Java密码学架构(Java">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android的加密缓存(上)--JCA基础">
+<meta property="og:url" content="http://wangyeming.github.com/2016/09/29/jca-introduction/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="在Java的知识体系中，Java平台安全是很重要的一部分。作为Android开发者，其实这部分知识对我们来说既陌生又熟悉。说熟悉，Android中Apk打包离不开的jks签名文件，Android 6.0提供的指纹识别接口的调用(Demo), 都是建立在Android平台安全的体系上。而Android平台安全又是建立在Java平台安全的这个坚实的基础上。说陌生，对于Java密码学架构(Java">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-09-29-jca-introduction-01.jpg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-09-29-jca-introduction-02.jpg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-09-29-jca-introduction-03.jpg">
+<meta property="og:image" content="https://docs.oracle.com/javase/8/docs/technotes/guides/security/images/jca/KeyGenerator.gif">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.603Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android的加密缓存(上)--JCA基础">
+<meta name="twitter:description" content="在Java的知识体系中，Java平台安全是很重要的一部分。作为Android开发者，其实这部分知识对我们来说既陌生又熟悉。说熟悉，Android中Apk打包离不开的jks签名文件，Android 6.0提供的指纹识别接口的调用(Demo), 都是建立在Android平台安全的体系上。而Android平台安全又是建立在Java平台安全的这个坚实的基础上。说陌生，对于Java密码学架构(Java">
+<meta name="twitter:image" content="http://wangyeming.github.com/img/2016-09-29-jca-introduction-01.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2016/09/29/jca-introduction/">
+
+
+
+
+
+  <title>Android的加密缓存(上)--JCA基础 | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2016/09/29/jca-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android的加密缓存(上)--JCA基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-29T00:00:00+08:00">
+                2016-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>  在Java的知识体系中，Java平台安全是很重要的一部分。作为Android开发者，其实这部分知识对我们来说既陌生又熟悉。说熟悉，Android中Apk打包离不开的jks签名文件，Android 6.0提供的指纹识别接口的调用(<a href="https://github.com/googlesamples/android-FingerprintDialog" target="_blank" rel="noopener">Demo</a>), 都是建立在Android平台安全的体系上。而Android平台安全又是建立在Java平台安全的这个坚实的基础上。说陌生，对于<strong>Java密码学架构</strong>(Java Cryptography Architecture 简称JCA)的还挺陌生，该系列文章分为上下两部分，这一篇主要聊聊JCA的基础知识，可能有些枯燥，在下篇，我会结合具体代码，完成一次简单的字符串缓存加密和解密。</p>
+<a id="more"></a>
+
+<h2 id="JCA的基本介绍"><a href="#JCA的基本介绍" class="headerlink" title="JCA的基本介绍"></a>JCA的基本介绍</h2><p>先看来自《<a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html#Design" target="_blank" rel="noopener">Java Cryptography Architecture<br>(JCA) Reference Guide</a>》的一段背景介绍：</p>
+<blockquote>
+<p>Java平台重视安全性，包括语言安全性，密码学，公钥基础设施，身份验证，安全通行和访问控制。<br>JCA是JDk平台上非常重要的部分，通过包含一个 “provider”架构，设计了一套API为包括 数字签名、消息摘要、证书和证书验证、加密(对称和非对称，分组和流式密码)、秘钥生成和管理、安全随机码生成等功能服务。</p>
+</blockquote>
+<p>可以看出，JCA是Java平台安全的基础，其它相关的还有Java密码学拓展(Java Cryptography Extension 简称JCE)、Java Secure Socket Extension (JSSE) 、Java Generic Security Services (JGSS)。</p>
+<p><img src="/img/2016-09-29-jca-introduction-01.jpg" alt="java密码学架构"></p>
+<h2 id="JCA的设计原则"><a href="#JCA的设计原则" class="headerlink" title="JCA的设计原则"></a>JCA的设计原则</h2><p>JCA在设计之初就遵循一些基本原则，也就是</p>
+<ul>
+<li>实现的独立性和互操作性</li>
+<li>算法的独立性和可扩展性</li>
+</ul>
+<p>应用无需实现具体的安全算法，或者说应用请求来自Java平台的安全服务。这些安全服务在“providers”（下面会介绍）中实现，这些providers可以互相协作，与应用之间没有必然的绑定限制。Java平台提供了现成的实现算法的providers，应用也可以通过自定义providers来实现特殊的算法。</p>
+<h2 id="JCA的架构"><a href="#JCA的架构" class="headerlink" title="JCA的架构"></a>JCA的架构</h2><h3 id="Cryptographic-Service-Providers-CSP-密码服务提供者"><a href="#Cryptographic-Service-Providers-CSP-密码服务提供者" class="headerlink" title="Cryptographic Service Providers CSP 密码服务提供者"></a>Cryptographic Service Providers CSP 密码服务提供者</h3><p>刚才在设计原则那部分，反复提到了“providers”，那providers到底是个什么东西呢? JCA文档是这么介绍的：</p>
+<blockquote>
+<p>a package or set of packages that supply a concrete implementation of a subset of the JDK Security API cryptography features<br> 一个包或包结合，提供JDK安全API密码特性的具体实现</p>
+</blockquote>
+<p> 这么看还是很抽象，首先要了解java.security.Provider，这个抽象类是所有安全提供者的基础类。每一个CSP，也就是我们的密码服务提供者，都包含java.security.Provider类的一个实例，这个实例包含了“providers”的名称和所有实现的安全服务/算法的列表，当我们需要某种算法时，JCA框架就会去查询这个“providers”数据库，找到匹配的实例并创建它。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Provider</span> <span class="keyword">extends</span> <span class="title">Properties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String info;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> version;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Set&lt;Map.Entry&lt;Object,Object&gt;&gt; entrySet = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> entrySetCallCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">boolean</span> initialized;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>引用下JCA文档中的这张图：</p>
+<p><img src="/img/2016-09-29-jca-introduction-02.jpg" alt="java密码学架构--02"></p>
+<p>配合这张图就很清晰了，我们开发者处于应用层，JCA框架层对应用层只提供接口，具体的实现逻辑被封装起来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//我们仅需通过具体的Engine class并提供需要的算法名称“MD5”，我们就可以获得一个provider实现的消息摘要实例</span></span><br><span class="line">MessageDigest md = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Key-Management-秘钥的管理"><a href="#Key-Management-秘钥的管理" class="headerlink" title="Key Management 秘钥的管理"></a>Key Management 秘钥的管理</h3><p>KeyStore是一个数据库，它可以被用于管理秘钥和证书的仓库。秘钥可用于应用的的数据验证，加密或签名。Sun Microsystems提供了默认的KeyStore实现。它将秘钥实现为一个文件，使用专有的秘钥类型(格式)叫“jks”.其他的秘钥格式如”jceks”(一种比jks加密强度更大的秘钥库格式)、”pkcs12”等。Android开发者应该很熟悉jks，打包生成apk的时候，我们就会用到jkd格式的秘钥。</p>
+<p>例如，Android系统提供了默认的KeyStore，可以通过名称“AndroidKeyStore”来获取</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">KeyStore mKeyStore = KeyStore.getInstance(<span class="string">"AndroidKeyStore"</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Engine-Classes-and-Algorithms-引擎类和算法"><a href="#Engine-Classes-and-Algorithms-引擎类和算法" class="headerlink" title="Engine Classes and Algorithms 引擎类和算法"></a>Engine Classes and Algorithms 引擎类和算法</h3><p>例如上文MessageDigest就是一类引擎类，1.4会介绍一些常用的引擎类，这里就不多做介绍了。</p>
+<h2 id="JCA的核心类和接口"><a href="#JCA的核心类和接口" class="headerlink" title="JCA的核心类和接口"></a>JCA的核心类和接口</h2><p>看到这，想必大家对Providers，KeyStore，引擎类， 算法这些概念有了一些基础的认知。先放松一下，看一下gakki的笑容，放松一下。</p>
+<p><img src="/img/2016-09-29-jca-introduction-03.jpg" alt="gakki"></p>
+<p>骚年，我们继续。从API这个角度入手，了解一下JCA框架有哪些基础的类。了解之后，才方便我们后面的实战部分。</p>
+<p>JCA的类大致可以分为以下几种：</p>
+<ul>
+<li>Provider and Security 类</li>
+<li>各种Engine类，如SecureRandom, MessageDigest, Signature, Cipher, Mac, KeyFactory, SecretKeyFactory, KeyPairGenerator, KeyGenerator, KeyAgreement, AlgorithmParameters, AlgorithmParameterGenerator , KeyStore, and CertificateFactory</li>
+<li>Key 接口和类</li>
+<li>算法参数规格接口和类(the Algorithm Parameter Specification Interfaces and Classes)<br>秘钥规格接口和类(the Key Specification Interfaces and Classes)</li>
+<li>多种支持和便利接口和类</li>
+</ul>
+<h3 id="Key"><a href="#Key" class="headerlink" title="Key"></a>Key</h3><p>首先了解一下秘钥，对应的定义是java.security.Key，是所有<strong><em>opaque keys</em></strong>的顶层接口，所谓<strong><em>opaque keys</em></strong>，也就是无法直接访问到构成key的材料，也就是说<strong><em>opaque keys</em></strong>给予了访问限制。只能通过getAlgorithm()、getFormat()、getEncoded()这些方法来获取到秘钥指定的信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Key</span> <span class="keyword">extends</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">6603384152749567654L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAlgorithm</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getFormat</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] getEncoded();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="KeyStore"><a href="#KeyStore" class="headerlink" title="KeyStore"></a>KeyStore</h3><p>用于创建和管理秘钥库, KeyStore是秘钥的数据库。秘钥库中的私有秘钥有与之相关的证书链，用于验证相关联的公有密钥。秘钥库也包含来自受信任实体的证书。上文有介绍，这里就不多说了。</p>
+<h3 id="KeyGenerator"><a href="#KeyGenerator" class="headerlink" title="KeyGenerator"></a>KeyGenerator</h3><p>通过使用特殊算法来生成秘钥，如果希望生成非对称秘钥，请使用<strong>KeyPairGenerator</strong></p>
+<p>初始化：有两种初始化方式：</p>
+<p><img src="https://docs.oracle.com/javase/8/docs/technotes/guides/security/images/jca/KeyGenerator.gif" alt="KeyGenerator"></p>
+<ul>
+<li>算法无关</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(SecureRandom random)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> keysize)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> keysize, SecureRandom random)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>算法相关</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(AlgorithmParameterSpec params)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(AlgorithmParameterSpec params, SecureRandom random)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>  生成秘钥</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> SecretKey <span class="title">generateKey</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>AlgorithmParameterSpec</strong></p>
+<p>算法参数，看源码可知只是个接口，具体的实现如KeyGenParameterSpec</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.security.spec;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* A (transparent) specification of cryptographic parameters.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* &lt;P&gt; This interface contains no methods or constants. Its only purpose</span></span><br><span class="line"><span class="comment">* is to group (and provide type safety for) all parameter specifications.</span></span><br><span class="line"><span class="comment">* All parameter specifications must implement this interface.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> Jan Luehe</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@see</span> java.security.AlgorithmParameters</span></span><br><span class="line"><span class="comment">* <span class="doctag">@see</span> DSAParameterSpec</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@since</span> 1.2</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AlgorithmParameterSpec</span> </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="KeyGenParameterSpec"><a href="#KeyGenParameterSpec" class="headerlink" title="KeyGenParameterSpec"></a>KeyGenParameterSpec</h3><p>参数很多，显然也是通过构建者模式进行的初始化，构建者AlgorithmParameterSpec.Builder，重要的参数有<br>秘钥别名，秘钥目的，block modes、EncryptionPadding等</p>
+<h3 id="PurposeEnum"><a href="#PurposeEnum" class="headerlink" title="PurposeEnum"></a>PurposeEnum</h3><p>秘钥目的：加密、解密、签名、验证</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PurposeEnum &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Purpose of key: encryption.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PURPOSE_ENCRYPT = <span class="number">1</span> &lt;&lt; <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Purpose of key: decryption.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PURPOSE_DECRYPT = <span class="number">1</span> &lt;&lt; <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Purpose of key: signing or generating a Message Authentication Code (MAC).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PURPOSE_SIGN = <span class="number">1</span> &lt;&lt; <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Purpose of key: signature or Message Authentication Code (MAC) verification.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PURPOSE_VERIFY = <span class="number">1</span> &lt;&lt; <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p>下面介绍几个Engine class</p>
+<h3 id="Cipher"><a href="#Cipher" class="headerlink" title="Cipher"></a>Cipher</h3><p>用于数据的加密和解密，通过秘钥初始化。有几种不同的算法：如 <strong><em>对称加密协议 symmetric bulk encryption</em></strong>(AES, DES, DESede, Blowfish, IDEA)，<strong><em>流式加密 stream encryption</em></strong>(RC4等)， <strong><em>非对称加密 asymmetric encryption</em></strong>(RSA等), <strong><em>密码基础的加密 password-based encryption</em></strong>(PBE)</p>
+<h3 id="signature"><a href="#signature" class="headerlink" title="signature"></a>signature</h3><p>提供用于密码数字签名算法(如DSA或RSAwithMD5)的功能</p>
+<h3 id="MessageDigest"><a href="#MessageDigest" class="headerlink" title="MessageDigest"></a>MessageDigest</h3><p>提供密码信息摘要（如SHA-1或MD5）的功能，接受任意直接长度的输入（byte[]格式），生成<br>固定长度的输出(称为digest或hash)</p>
+<h3 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h3><p><strong>M</strong>essage <strong>A</strong>uthentication <strong>C</strong>ode的缩写，与MessageDigest类似， 用于检测信息的完整性以及在不可靠媒介上存储(包含一个secret key，持有正确key的人能够验证已接收的信息)</p>
+<hr>
+<p>** 参考资料 **</p>
+<ul>
+<li><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html#Design" target="_blank" rel="noopener">Java Cryptography Architecture(JCA) Reference Guide</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/23/java-container-brief-introduction/" rel="next" title="Java 容器的简单总结">
+                <i class="fa fa-chevron-left"></i> Java 容器的简单总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/18/android-encrupt-and-decrupt/" rel="prev" title="Android的加密缓存(下)--字符串加密解密实战">
+                Android的加密缓存(下)--字符串加密解密实战 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JCA的基本介绍"><span class="nav-number">1.</span> <span class="nav-text">JCA的基本介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JCA的设计原则"><span class="nav-number">2.</span> <span class="nav-text">JCA的设计原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JCA的架构"><span class="nav-number">3.</span> <span class="nav-text">JCA的架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cryptographic-Service-Providers-CSP-密码服务提供者"><span class="nav-number">3.1.</span> <span class="nav-text">Cryptographic Service Providers CSP 密码服务提供者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-Management-秘钥的管理"><span class="nav-number">3.2.</span> <span class="nav-text">Key Management 秘钥的管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Engine-Classes-and-Algorithms-引擎类和算法"><span class="nav-number">3.3.</span> <span class="nav-text">Engine Classes and Algorithms 引擎类和算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JCA的核心类和接口"><span class="nav-number">4.</span> <span class="nav-text">JCA的核心类和接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Key"><span class="nav-number">4.1.</span> <span class="nav-text">Key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KeyStore"><span class="nav-number">4.2.</span> <span class="nav-text">KeyStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KeyGenerator"><span class="nav-number">4.3.</span> <span class="nav-text">KeyGenerator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KeyGenParameterSpec"><span class="nav-number">4.4.</span> <span class="nav-text">KeyGenParameterSpec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PurposeEnum"><span class="nav-number">4.5.</span> <span class="nav-text">PurposeEnum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cipher"><span class="nav-number">4.6.</span> <span class="nav-text">Cipher</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#signature"><span class="nav-number">4.7.</span> <span class="nav-text">signature</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MessageDigest"><span class="nav-number">4.8.</span> <span class="nav-text">MessageDigest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac"><span class="nav-number">4.9.</span> <span class="nav-text">Mac</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="算是一个读书笔记吧，很多知识点不总结很容易忘记，没有什么特别系统和深奥的知识点，我们做安卓开发的，java就是我们的地基之一，温故知新，共勉。每个特性后面给出Effective java的建议，让我们荡漾在理论的海洋中吧~">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java 知识点整理--java5新特性(未完)">
+<meta property="og:url" content="http://wangyeming.github.com/2016/08/18/java-knowledge-point/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="算是一个读书笔记吧，很多知识点不总结很容易忘记，没有什么特别系统和深奥的知识点，我们做安卓开发的，java就是我们的地基之一，温故知新，共勉。每个特性后面给出Effective java的建议，让我们荡漾在理论的海洋中吧~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.602Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java 知识点整理--java5新特性(未完)">
+<meta name="twitter:description" content="算是一个读书笔记吧，很多知识点不总结很容易忘记，没有什么特别系统和深奥的知识点，我们做安卓开发的，java就是我们的地基之一，温故知新，共勉。每个特性后面给出Effective java的建议，让我们荡漾在理论的海洋中吧~">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2016/08/18/java-knowledge-point/">
+
+
+
+
+
+  <title>java 知识点整理--java5新特性(未完) | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2016/08/18/java-knowledge-point/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java 知识点整理--java5新特性(未完)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-18T00:00:00+08:00">
+                2016-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>算是一个读书笔记吧，很多知识点不总结很容易忘记，没有什么特别系统和深奥的知识点，我们做安卓开发的，java就是我们的地基之一，温故知新，共勉。<br>每个特性后面给出<em>Effective java</em>的建议，让我们荡漾在理论的海洋中吧~</p>
+<a id="more"></a>
+
+<p>本篇主要简述java5的新特性，分别是:</p>
+<ul>
+<li>泛型</li>
+<li>枚举</li>
+<li>注解</li>
+<li>for-each循环</li>
+<li>自动装箱和自动拆箱</li>
+<li>可变参数</li>
+<li>静态导入</li>
+<li>并发包java.util.concurrent</li>
+</ul>
+<hr>
+<h3 id="泛型（Generic-Type"><a href="#泛型（Generic-Type" class="headerlink" title="泛型（Generic Type)"></a>泛型（Generic Type)</h3><blockquote>
+<p>泛型保证了集合的类型安全，没有泛型，从集合中读取的值必须手动进行类型强转，一旦插入类型错误的对象，强转就会出错。有了泛型，编译器预知集合接受的类型，自动进行类型强转，且能在编译时告知是否类型出错。(<em>Effective Java p97 第五章</em>)</p>
+</blockquote>
+<p><strong>概念</strong>：泛型类+泛型接口(声明中具有一个或多个<strong>类型参数</strong>的类或接口)</p>
+<p><strong>写法</strong>：类名或接口名后跟着&lt;&gt;, 如List&lt;String&gt;</p>
+<h4 id="引入概念："><a href="#引入概念：" class="headerlink" title="引入概念："></a>引入概念：</h4><p><strong>原生态类型</strong>：不带任何实际类型参数的泛型名称，如List&lt;E&amp;&gt;对应的原生态类型为List</p>
+<p><strong>无限制的通配符类型</strong>：用？表示，不确定或不关心实际的类型参数， List&lt;?&gt; 只能添加null，不能添加其他元素</p>
+<p><strong>有限的通配符类型</strong>：&lt;? extends 具体类型&gt;  &lt;? super 具体类型&gt; &lt;? extends 具体类型 &amp; 具体接口类型&gt;</p>
+<p><strong>显式的类型说明</strong>：在类名和方法名中加一个.&lt;具体类型&gt;</p>
+<p>泛型的擦除机制：编译时强化类型，运行时丢弃元素的类型信息。</p>
+<p>数组和列表的差异：</p>
+<ul>
+<li>数组是<strong>协变</strong>的，列表不是。比如Sub是Super的子类型，则Sub[]是Super[]的子类型，但List&lt;Sub&gt;不是List&lt;Super&gt;的子类型</li>
+<li>数组是具体化的，列表(除了无限制的通配符类型)是不可具体化的。不可具体化表示运行时包含的信息比编译时少(泛型的擦除机制)</li>
+</ul>
+<h4 id="Effective-Java的建议"><a href="#Effective-Java的建议" class="headerlink" title="Effective Java的建议"></a>Effective Java的建议</h4><ul>
+<li>请不要在新代码中使用原生态类型，除了类文字(*.class)必须使用， instanceof(泛型的擦除机制)</li>
+<li>消除非受检警告，无法消除切能证明该警告是类型安全的，可以用@SuppreeWarnings(‘unchecked’)注解来消除，并且范围要尽可能小，同时添加注解，告知原因</li>
+<li>列表优先于数组(数组和列表的差异)</li>
+<li>优先考虑泛型</li>
+<li>优先考虑泛型方法</li>
+<li>利用有限通配符来提升API的灵活性</li>
+<li>优先考虑类型安全的异构容器(异构：容器内元素类型不同)</li>
+</ul>
+<hr>
+<h3 id="枚举-Enum"><a href="#枚举-Enum" class="headerlink" title="枚举(Enum)"></a>枚举(Enum)</h3><blockquote>
+<p>相对于传统的int/string枚举类型，枚举提供了编译时的安全，自动的序列化，是真正的final</p>
+</blockquote>
+<p><strong>概念</strong>：由一组常量组成合法值的类型。</p>
+<h4 id="引入概念：-1"><a href="#引入概念：-1" class="headerlink" title="引入概念："></a>引入概念：</h4><p><strong>位域</strong>： 用OR位运算将几个常量合并到一个集合中。</p>
+<h4 id="Effective-Java的建议-1"><a href="#Effective-Java的建议-1" class="headerlink" title="Effective Java的建议"></a>Effective Java的建议</h4><ul>
+<li>用enum代替int常量</li>
+<li>用实例域代替序数， 永远不要根据枚举的序数导出与它关联的值，最好完全避免使用ordinal方法</li>
+<li>用EnumSet代替位域，当底层的枚举类型少于等于64个时，整个EnumSet就是用单个long表示，性能堪比位域</li>
+<li>用EnumMap代替序数索引</li>
+<li>用接口模拟可伸缩的枚举</li>
+</ul>
+<hr>
+<h3 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h3><blockquote>
+<p>注解也被称作元数据，为我们在代码中添加信息提供了一种形式化的方法，使我们可以再稍后某个时刻非常方便的地使用这些数据(Java编程思想 第20章 p620)</p>
+</blockquote>
+<p>java.lang 提供了三个内置注解</p>
+<pre><code>@Override 表示当前方法覆盖超类方法
+@Deprecated 表示废弃的方法或域
+@SuppressWarnings 关闭不当的编译器警告</code></pre><p><strong>元注解</strong>： java提供四种元注解，专门负责新注解的创建</p>
+<pre><code>@Target 定义注解将应用在什么地方。ElementType.METHOD(方法) FIELD(域) LOCAL_VARIAVLE(局部变量) CONSTRUCTIOR(构造器) PACKAGE(包) PARAMETER(参数) TYPE(类,接口,enum)
+@Retention  表示在什么级别保存该注解信息。SOURCE(编译器丢弃) CLASS(class可用，被VM丢弃) RUNTIME(运行期也保留，可通过反射机制读取该注解信息)
+@Documented 将此注解包含在Javadoc中
+@Inherited 允许之类继承父类的注解</code></pre><p>例如：</p>
+<pre><code>@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Test {}</code></pre><p>在比如我们在Android中经常用到的注解：</p>
+<pre><code>public final class Gender {
+
+    @IntDef({MAN, WOMAN, OTHER})
+    public @interface Type {}
+
+    public static final int MAN = 0;
+    public static final int WOMAN = 1;
+    public static final int OTHER = 2;
+}</code></pre><h4 id="接口元素"><a href="#接口元素" class="headerlink" title="接口元素"></a>接口元素</h4><p>接口允许的元素类型有：</p>
+<ul>
+<li>基本类型</li>
+<li>String</li>
+<li>Class</li>
+<li>enum</li>
+<li>Annotation</li>
+<li>以上类型的数组</li>
+</ul>
+<p>元素的默认值有限制，首先不能有不确定的值(要么必须有默认值，要么使用注解时必须提供)，其次对于非基本类型元素，不能给null值</p>
+<p>语法为：public int id() default -1;</p>
+<h4 id="注解处理器"><a href="#注解处理器" class="headerlink" title="注解处理器"></a>注解处理器</h4><p>AnnotatedElement接口</p>
+<ul>
+<li>getAnnotation(Class<t> annotationClass) 如果存在该元素的指定类型的注释，则返回这些注释，否则返回 null</t></li>
+<li>getAnnotations()  返回此元素上存在的所有注释。</li>
+<li>getDeclaredAnnotations()  返回直接存在于此元素上的所有注释。</li>
+<li>isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationClass)  如果指定类型的注释存在于此元素上，则返回 true，否则返回 false。</li>
+</ul>
+<h4 id="Effective-Java的建议-2"><a href="#Effective-Java的建议-2" class="headerlink" title="Effective Java的建议"></a>Effective Java的建议</h4><ul>
+<li>注解优于命名模式(增加错误提示、确保只用于相应元素、参数值与程序元素关联)</li>
+<li>坚持使用Override注解</li>
+<li>用标记接口定义类型(标记接口值没有包含方法声明的接口)</li>
+</ul>
+<hr>
+<h3 id="for-each循环"><a href="#for-each循环" class="headerlink" title="for-each循环"></a>for-each循环</h3><p>这部分就不多说了</p>
+<h4 id="Effective-Java的建议-3"><a href="#Effective-Java的建议-3" class="headerlink" title="Effective Java的建议"></a>Effective Java的建议</h4><ul>
+<li>for-each循环优于传统的for循环</li>
+</ul>
+<hr>
+<h3 id="自动装箱和自动拆箱"><a href="#自动装箱和自动拆箱" class="headerlink" title="自动装箱和自动拆箱"></a>自动装箱和自动拆箱</h3><p>每个基本类型都有对应的引用类型，称为装箱类型。如int的装箱类型为Integer.</p>
+<p><strong>主要区别</strong>：</p>
+<ul>
+<li>基本类型只有值，装箱类型具有与它们值不同的同一性。即两个装箱类型值相同，但是可以是不同的同一性。</li>
+<li>基本类型只有功能完备的值，装箱类型还有个非功能值null</li>
+<li>基本类型比装箱类型节约时间和空间</li>
+</ul>
+<h4 id="Effective-Java的建议-4"><a href="#Effective-Java的建议-4" class="headerlink" title="Effective Java的建议"></a>Effective Java的建议</h4><ul>
+<li>基本类型优先于装箱基本类型(集合中的键和值，泛型中的参数化类型必须使用装箱基本类型)</li>
+</ul>
+<hr>
+<h3 id="可变参数"><a href="#可变参数" class="headerlink" title="可变参数"></a>可变参数</h3><p>可变参数方法接受0个或多个指定类型的参数</p>
+<h4 id="Effective-Java的建议-5"><a href="#Effective-Java的建议-5" class="headerlink" title="Effective Java的建议"></a>Effective Java的建议</h4><ul>
+<li>慎用可变参数(可变参数方法的每次调用都会导致进行一次数组分配和数组化)</li>
+</ul>
+<hr>
+<h3 id="静态导入-static-import"><a href="#静态导入-static-import" class="headerlink" title="静态导入(static import)"></a>静态导入(static import)</h3><p>也没什么好说的 import static xxx;<br>在大量利用工具类导出的常量时，使用静态导入机制，避免用类名来修饰常量名</p>
+<hr>
+<h3 id="并发包java-util-concurrent"><a href="#并发包java-util-concurrent" class="headerlink" title="并发包java.util.concurrent"></a>并发包java.util.concurrent</h3><p>这部分限于目前掌握情况，暂时等待补充吧</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/16/image-banner/" rel="next" title="Android 图片轮播器的实现及源码解析">
+                <i class="fa fa-chevron-left"></i> Android 图片轮播器的实现及源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/22/java-thread-state/" rel="prev" title="java 打印线程的六种状态">
+                java 打印线程的六种状态 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型（Generic-Type"><span class="nav-number">1.</span> <span class="nav-text">泛型（Generic Type)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入概念："><span class="nav-number">1.1.</span> <span class="nav-text">引入概念：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Effective-Java的建议"><span class="nav-number">1.2.</span> <span class="nav-text">Effective Java的建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#枚举-Enum"><span class="nav-number">2.</span> <span class="nav-text">枚举(Enum)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入概念：-1"><span class="nav-number">2.1.</span> <span class="nav-text">引入概念：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Effective-Java的建议-1"><span class="nav-number">2.2.</span> <span class="nav-text">Effective Java的建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注解"><span class="nav-number">3.</span> <span class="nav-text">注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#接口元素"><span class="nav-number">3.1.</span> <span class="nav-text">接口元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注解处理器"><span class="nav-number">3.2.</span> <span class="nav-text">注解处理器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Effective-Java的建议-2"><span class="nav-number">3.3.</span> <span class="nav-text">Effective Java的建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-each循环"><span class="nav-number">4.</span> <span class="nav-text">for-each循环</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Effective-Java的建议-3"><span class="nav-number">4.1.</span> <span class="nav-text">Effective Java的建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动装箱和自动拆箱"><span class="nav-number">5.</span> <span class="nav-text">自动装箱和自动拆箱</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Effective-Java的建议-4"><span class="nav-number">5.1.</span> <span class="nav-text">Effective Java的建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可变参数"><span class="nav-number">6.</span> <span class="nav-text">可变参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Effective-Java的建议-5"><span class="nav-number">6.1.</span> <span class="nav-text">Effective Java的建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态导入-static-import"><span class="nav-number">7.</span> <span class="nav-text">静态导入(static import)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发包java-util-concurrent"><span class="nav-number">8.</span> <span class="nav-text">并发包java.util.concurrent</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

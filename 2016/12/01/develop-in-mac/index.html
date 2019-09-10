@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Mac,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本文不是一篇技术博客，只是简单记录下自己入手macbook pro后，如何平滑的切换到mac开发环境的心得，偶尔换个心境嘛~">
+<meta name="keywords" content="Mac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上手mac开发环境">
+<meta property="og:url" content="http://wangyeming.github.com/2016/12/01/develop-in-mac/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="本文不是一篇技术博客，只是简单记录下自己入手macbook pro后，如何平滑的切换到mac开发环境的心得，偶尔换个心境嘛~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-12-01-2016-12-01-develop-in-mac-01.jpg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-12-01-2016-12-01-develop-in-mac-01.jpg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-12-01-2016-12-01-develop-in-mac-02.jpg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2016-12-01-2016-12-01-develop-in-mac-03.jpg">
+<meta property="og:image" content="https://justgetflux.com/news/images/darkmode.png">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.604Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="上手mac开发环境">
+<meta name="twitter:description" content="本文不是一篇技术博客，只是简单记录下自己入手macbook pro后，如何平滑的切换到mac开发环境的心得，偶尔换个心境嘛~">
+<meta name="twitter:image" content="http://wangyeming.github.com/img/2016-12-01-2016-12-01-develop-in-mac-01.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2016/12/01/develop-in-mac/">
+
+
+
+
+
+  <title>上手mac开发环境 | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2016/12/01/develop-in-mac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">上手mac开发环境</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-01T17:04:34+08:00">
+                2016-12-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文不是一篇技术博客，只是简单记录下自己入手macbook pro后，如何平滑的切换到mac开发环境的心得，偶尔换个心境嘛~</p>
+<p><img src="/img/2016-12-01-2016-12-01-develop-in-mac-01.jpg" alt></p>
+<a id="more"></a>
+
+<p>距离完成上一篇博客已经过去一个半月了，入职新东家小米也已经快三个月了，中途还不小心扭伤了脖子躺了一周.在早先的实习经历中曾用过半年的iMac作为开发机，mac系统的unix环境和系统的优点给我留下了深刻印象。中间也折腾过很多次ubuntu系统，从14.04到16.04，不过ubuntu通用软件的缺失着实很麻烦。进入新公司，分到的依然是windows系统，还是老掉牙的win7加机械硬盘，咬了牙，入手了2016版的macbook pro。稍微记录下，如何高效率的切换到mac开发环境。</p>
+<h1 id="熟悉新电脑和系统"><a href="#熟悉新电脑和系统" class="headerlink" title="熟悉新电脑和系统"></a>熟悉新电脑和系统</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>我入手的是13寸深灰色不带touch bar的最低配，升级到16g内存，港版，同学代购。对我来说，保证性能的同时，足够轻便是我的原则。买之前已经看到一些评测，15寸不够便携(可能是前面两款本本的重量让我怨念不止), touch bar对我来说不值得，而且13寸带touch bar款电池容量更小，续航是个问题。终于一番波折后，本本到手了。</p>
+<p><img src="/img/2016-12-01-2016-12-01-develop-in-mac-01.jpg" alt></p>
+<h2 id="额外的准备工作"><a href="#额外的准备工作" class="headerlink" title="额外的准备工作"></a>额外的准备工作</h2><p>港版的本本转接口是英标插头，是没办法直接用的，好在macbook pro的变压器和插头是分开的，单买一个插头或者转换器就好了。</p>
+<p><img src="/img/2016-12-01-2016-12-01-develop-in-mac-02.jpg" alt></p>
+<h2 id="一个合适的转接器"><a href="#一个合适的转接器" class="headerlink" title="一个合适的转接器"></a>一个合适的转接器</h2><p>新版macbook pro只有Thunderbolt 3接口，我工作时需要外接显示器、键盘和安卓手机，这里安利<a href="http://item.mi.com/1163000011.html" target="_blank" rel="noopener">自家小米的公司的一款转接器</a>，149，USB-C转一个html、usb-a、usb-c，一个接口可以同时接显示器，键盘和充电。不差钱的可以去苹果官网买原装配件。</p>
+<p><img src="/img/2016-12-01-2016-12-01-develop-in-mac-03.jpg" alt></p>
+<p>买2016款之前确实也纠结过接口的问题，毕竟工作时键盘和手机就要占用两个usbA接口，乞丐版的两个接口还都在同侧，耳机接口在右侧最靠近屏幕的一端。确实有很多不方便之处，</p>
+<h2 id="熟练各种快捷键"><a href="#熟练各种快捷键" class="headerlink" title="熟练各种快捷键"></a>熟练各种快捷键</h2><p>想高效率的使用mac的话，快捷键是必不可少的。首先要记住的是mac上引入了command键，基本上windows上ctrl配合的快捷键都换成command键。比如说剪切，复制，粘贴从ctrl+x ctrl+c ctrl+v变成了command+x command+c command+v。具体的可以参考 <a href="https://support.apple.com/zh-cn/HT201236" target="_blank" rel="noopener">官网说明–Mac 键盘快捷键</a></p>
+<p>值得一提的是，mac上全屏加左右切换对工作时需要开启很多窗口的人来说非常实用，mac相比windows上多窗口切换，mac上全屏应用的左右切换明显更自然，效率更高。触摸板就是三指左右轻扫，键盘就是ctrl加左右方向键。。</p>
+<p>mac默认的鼠标滚轮方向和win是相反的，可以在系统设置中修改。不过习惯了之后个人感觉更自然。</p>
+<p>哦，对了，记得到设置里，设置触摸板轻巧代替按下</p>
+<h2 id="常用软件"><a href="#常用软件" class="headerlink" title="常用软件"></a>常用软件</h2><p>我常用的chrome、atom、qq、微信、第三方输入法（我用的是百度输入法，搜狗输入法不知道为何在qq和微信的聊天窗口，卡顿的特别严重）、flux（护眼软件）</p>
+<p><img src="https://justgetflux.com/news/images/darkmode.png" alt></p>
+<p><a href="https://justgetflux.com/news/pages/mac/" target="_blank" rel="noopener">https://justgetflux.com/news/pages/mac/</a></p>
+<hr>
+<h1 id="开发环境搭建"><a href="#开发环境搭建" class="headerlink" title="开发环境搭建"></a>开发环境搭建</h1><h2 id="Android开发环境"><a href="#Android开发环境" class="headerlink" title="Android开发环境"></a>Android开发环境</h2><p>没什么好多说的，JDK Android Studio Android SDK NDk 等等。翻墙下载或选择国内镜像。</p>
+<h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><p>iTerm是必不好少的，配合<a href="https://github.com/robbyrussell/oh-my-zsh" target="_blank" rel="noopener">z-shell</a>,选择一个自己的主题，最快时间把命令行配置成顺手的模式。<br>vim的话，<a href="https://github.com/VundleVim/Vundle.vim" target="_blank" rel="noopener">vundlevim</a>是个不错的插件管理工具。</p>
+<h2 id="包管理"><a href="#包管理" class="headerlink" title="包管理"></a>包管理</h2><p>正如apt对于ubuntu、yum对于Fedaro，Chocolatey对于windows，mac上有一些广泛使用的包管理工具。推荐<a href="http://brew.sh/" target="_blank" rel="noopener">HomeBrew</a></p>
+<h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><p>svn就不提了，android studio自带的版本控制对于svn这种古老的版本控制工具基本足够了。</p>
+<p>git的话，可以通过homebrew直接安装git，图形化工具的话，<a href="https://www.sourcetreeapp.com/" target="_blank" rel="noopener">SourceTree</a>是个不错的选择。</p>
+<p>考虑到ssh连接的安全性，很多公司的项目要求必须通过ssh访问，ssh访问需要配置ssh key，生成ssh key需要用户名和邮箱信息，公司项目通常使用的是公司邮箱，个人项目一般是个人邮箱，ssh key无法通用。我们可以配置多个ssh key， <a href="https://www.liaohuqiu.net/cn/posts/git-setup-and-setting/" target="_blank" rel="noopener">命令行下的git配置问题: 多个 sshkey, 多个用户身份, git alias</a></p>
+<h2 id="软件推荐"><a href="#软件推荐" class="headerlink" title="软件推荐"></a>软件推荐</h2><h1 id="相关文章推荐"><a href="#相关文章推荐" class="headerlink" title="相关文章推荐"></a>相关文章推荐</h1><p><a href="http://zhihu.com/question/33887923/answer/57480318" target="_blank" rel="noopener">Mac 小白应该了解哪些东西？ - 回答作者: 知乎用户</a></p>
+<p><a href="http://www.zhihu.com/question/20873070" target="_blank" rel="noopener">程序员如何优雅地使用macOS？ - 168 个回答, 17387 人关注</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mac/" rel="tag"># Mac</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/18/android-encrupt-and-decrupt/" rel="next" title="Android的加密缓存(下)--字符串加密解密实战">
+                <i class="fa fa-chevron-left"></i> Android的加密缓存(下)--字符串加密解密实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/19/gson-turtrial/" rel="prev" title="Gson TypeToken特性实战">
+                Gson TypeToken特性实战 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#熟悉新电脑和系统"><span class="nav-number">1.</span> <span class="nav-text">熟悉新电脑和系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#额外的准备工作"><span class="nav-number">1.2.</span> <span class="nav-text">额外的准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个合适的转接器"><span class="nav-number">1.3.</span> <span class="nav-text">一个合适的转接器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#熟练各种快捷键"><span class="nav-number">1.4.</span> <span class="nav-text">熟练各种快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用软件"><span class="nav-number">1.5.</span> <span class="nav-text">常用软件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开发环境搭建"><span class="nav-number">2.</span> <span class="nav-text">开发环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android开发环境"><span class="nav-number">2.1.</span> <span class="nav-text">Android开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令行"><span class="nav-number">2.2.</span> <span class="nav-text">命令行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包管理"><span class="nav-number">2.3.</span> <span class="nav-text">包管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本控制"><span class="nav-number">2.4.</span> <span class="nav-text">版本控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件推荐"><span class="nav-number">2.5.</span> <span class="nav-text">软件推荐</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关文章推荐"><span class="nav-number">3.</span> <span class="nav-text">相关文章推荐</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

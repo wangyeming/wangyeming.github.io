@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Machine Learning,python,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="不知不觉，跟着莫凡大大的机器学习教程学习了一段时间。作为初学者，是时候总结一下目前学习到的知识。第一篇就从python和python中必需的数据处理库，图像库开始吧。">
+<meta name="keywords" content="Machine Learning,python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习基础1--python">
+<meta property="og:url" content="http://wangyeming.github.com/2018/09/04/machine-learning-base-python/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="不知不觉，跟着莫凡大大的机器学习教程学习了一段时间。作为初学者，是时候总结一下目前学习到的知识。第一篇就从python和python中必需的数据处理库，图像库开始吧。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.608Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习基础1--python">
+<meta name="twitter:description" content="不知不觉，跟着莫凡大大的机器学习教程学习了一段时间。作为初学者，是时候总结一下目前学习到的知识。第一篇就从python和python中必需的数据处理库，图像库开始吧。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2018/09/04/machine-learning-base-python/">
+
+
+
+
+
+  <title>机器学习基础1--python | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2018/09/04/machine-learning-base-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习基础1--python</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-04T11:40:19+08:00">
+                2018-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习新手入门/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习新手入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>不知不觉，跟着莫凡大大的机器学习教程学习了一段时间。作为初学者，是时候总结一下目前学习到的知识。第一篇就从python和python中必需的数据处理库，图像库开始吧。</p>
+<a id="more"></a>
+
+<h2 id="why-python"><a href="#why-python" class="headerlink" title="why python"></a>why python</h2><p>机器学习当下最火的莫过于深度学习和神经网络，深度学习当中最流行的tensorflow支持最好的开发语言就是python。当然python凭借其简单灵活的语法和庞大的第三方库，在程序员和非程序员当中都有很大的影响力。</p>
+<h2 id="python2和python3"><a href="#python2和python3" class="headerlink" title="python2和python3"></a>python2和python3</h2><p>python2和python3是指python的两个大版本，需要注意的是python3并不向下兼容python2的语法，例如</p>
+<p>在python2中，我们这样去打印信息：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">'Hello World'</span></span><br></pre></td></tr></table></figure>
+
+<p>而python3中，你必须加上括号：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">'Hello World'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>个人建议，直接学习python3即可，除了历史代码，很多第三方库和框架，包括tensorflow，scrapy都很好的支持了python3，用新不用旧。</p>
+<h2 id="pythonic"><a href="#pythonic" class="headerlink" title="pythonic"></a>pythonic</h2><p>对于老码农而言，尤其是已经掌握了一门动态语言，学习Python并不是什么难事。Python语言有自己鲜明的风格，语句不用分号结尾，不用花括号，依赖缩进判定语句的层次。作为一门动态强类型语言，python兼具语法灵活性和类型安全。很Python的Python代码会被称为『pythonic』。</p>
+<p>例如：在Java中，我们交换两个数字，通过这样写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> temp = a;</span><br><span class="line">a = b;</span><br><span class="line">b = temp;</span><br></pre></td></tr></table></figure>
+
+<p>而pythonic的做法是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a, b = b, a</span><br></pre></td></tr></table></figure>
+
+<h2 id="code-style"><a href="#code-style" class="headerlink" title="code style"></a>code style</h2><p>我坚持认为每一门语言的code style是非常重要的，而python里最流行的code style也就是<a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="noopener">PEP 8 – Style Guide for Python Code</a>.</p>
+<p>为什么需要坚持code style？每一门语言有自己的设计思路和最佳应用场景，也就是为了解决某类问题。而学习新语言，即是为了解决新问题，也是为了拓宽自己的眼界。没必要固守别的语言的一套规范。</p>
+<p>如果是用IDE开发的话，基本上都内置了PEP 8规范，所以不用太关心。</p>
+<h2 id="IDE"><a href="#IDE" class="headerlink" title="IDE"></a>IDE</h2><p>早先我也认为Vim才是学习语言最好的平台，甚至一度为了解决『python语法检查的vim插件在电脑上不生效的问题』绞尽脑汁。其实不需要太抗拒IDE，IDE无非为我们提供了目录树，语法检查，自动排班，一键运行，debug断点等功能而已。先重点着眼于语法本身，而不是各种奇淫技巧。这里推荐：</p>
+<p><a href="https://www.jetbrains.com/pycharm/" target="_blank" rel="noopener">PyCharm: Python IDE for Professional Developers by JetBrains</a></p>
+<p>此外。推荐有一定程序基础的人可以去LeetCode上选择用python刷题，真正的白版写python，多写几题python的常用基础语法就熟悉了。也解决了学语言没有应用场景的尴尬。</p>
+<p><a href="https://leetcode-cn.com/" target="_blank" rel="noopener">领扣(LeetCode) - 极客挚爱的在线技术平台</a></p>
+<h2 id="初期学习进度关键点"><a href="#初期学习进度关键点" class="headerlink" title="初期学习进度关键点"></a>初期学习进度关键点</h2><ul>
+<li><p>搭好环境+Hello World</p>
+<p>  俗话说，工欲善其事，必先利其器。好多人卡在学习的第一步，其实查找资料，探索方法也是写代码的乐趣之一阿。</p>
+</li>
+<li><p>读一个文本文件，原样写入到一个新文件中。</p>
+</li>
+<li><p>(进阶1) 读一个m行n列的文本文件，按照指定要求输出到新文件，要求例如：第一列需要输入文件的某几列值求和。第二列需要输入文件的某一列进行正则匹配来获取关键字。第一列是1-7的数字，请转化为Monday-Sunday的字符串</p>
+</li>
+<li><p>(进阶2) 将其中某些数据处理方法，封装成函数。</p>
+</li>
+<li><p>(进阶3) 输出原文件某一列的和和方差。如果该文件非常的大，比如说4GB，不能一次加载到内存，如何处理？</p>
+<p>  掌握要点包括 基本的IO操作，条件语句，循环语句，字符串常见处理函数, 类型转换, 正则表达式，集合，map，函数等。基本上到这一步，把python作为普通的文本处理工具已经不再话下了。正则表达式可能是一个难点，程序语言的初学者可能会常常会一口气将数据全部读入到内存中，多犯几次错误其实就慢慢学会了。</p>
+</li>
+<li><p>导入第三方库，利用库里的方法帮助处理数据。如利用numpy，计算均值，方差，标准差，中位数等。</p>
+<p>  python以工具库多闻名。这一步将学会如何下载，导入第三方库，并使用库中的方法进行操作。</p>
+</li>
+<li><p>定义一个python类，类包括类方法，静态方法，类成员变量。</p>
+</li>
+<li><p>python多线程，比如说由100个文件，每个文件处理时间需要1min，如何利用多线程去加快计算。</p>
+</li>
+</ul>
+<h2 id="python入门书籍和教程推荐"><a href="#python入门书籍和教程推荐" class="headerlink" title="python入门书籍和教程推荐"></a>python入门书籍和教程推荐</h2><p><a href="https://morvanzhou.github.io/tutorials/python-basic/basic/" target="_blank" rel="noopener">莫凡 Python3基础教程</a><br><a href="https://legacy.gitbook.com/book/lenkimo/byte-of-python-chinese-edition/details" target="_blank" rel="noopener">简明 Python 教程</a><br><a href="http://www.kuqin.com/docs/diveintopythonzh-cn-5.4b/html/toc/" target="_blank" rel="noopener">Dive Into Python 中文版</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/31/android-target-SDK/" rel="next" title="Android Target SDK升级一路趟坑记">
+                <i class="fa fa-chevron-left"></i> Android Target SDK升级一路趟坑记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/04/machine-learning-base-numpy/" rel="prev" title="机器学习基础2--python科学计算之numpy">
+                机器学习基础2--python科学计算之numpy <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#why-python"><span class="nav-number">1.</span> <span class="nav-text">why python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python2和python3"><span class="nav-number">2.</span> <span class="nav-text">python2和python3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pythonic"><span class="nav-number">3.</span> <span class="nav-text">pythonic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code-style"><span class="nav-number">4.</span> <span class="nav-text">code style</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDE"><span class="nav-number">5.</span> <span class="nav-text">IDE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初期学习进度关键点"><span class="nav-number">6.</span> <span class="nav-text">初期学习进度关键点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python入门书籍和教程推荐"><span class="nav-number">7.</span> <span class="nav-text">python入门书籍和教程推荐</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

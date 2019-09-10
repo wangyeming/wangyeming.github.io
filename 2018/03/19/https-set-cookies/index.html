@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Network,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="没错，大家也看到了这篇博客的标题是英文，这说明了什么呢？这说明了这是一个悲伤的故事，预示着作者心中的哀伤(苦笑脸)。其实最主要的原因是，用中文描述起来可能有点啰嗦。 『Https请求的response的header中, Set-Cookie里的domain字段的值，是否需要以点.开头呢？』 为什么会有这样的疑问？一切还要从一个月前的那件事说起~">
+<meta name="keywords" content="Android,Network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="In https response header, Does the value of Set-Cookie Domain need a leading dot？">
+<meta property="og:url" content="http://wangyeming.github.com/2018/03/19/https-set-cookies/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="没错，大家也看到了这篇博客的标题是英文，这说明了什么呢？这说明了这是一个悲伤的故事，预示着作者心中的哀伤(苦笑脸)。其实最主要的原因是，用中文描述起来可能有点啰嗦。 『Https请求的response的header中, Set-Cookie里的domain字段的值，是否需要以点.开头呢？』 为什么会有这样的疑问？一切还要从一个月前的那件事说起~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-01.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-02.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-08.jpg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-09.jpeg">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-03.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-04.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-05.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-06.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-07.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-10.png">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.607Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="In https response header, Does the value of Set-Cookie Domain need a leading dot？">
+<meta name="twitter:description" content="没错，大家也看到了这篇博客的标题是英文，这说明了什么呢？这说明了这是一个悲伤的故事，预示着作者心中的哀伤(苦笑脸)。其实最主要的原因是，用中文描述起来可能有点啰嗦。 『Https请求的response的header中, Set-Cookie里的domain字段的值，是否需要以点.开头呢？』 为什么会有这样的疑问？一切还要从一个月前的那件事说起~">
+<meta name="twitter:image" content="http://wangyeming.github.com/img/2018-03-19-https-set-cookies-01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2018/03/19/https-set-cookies/">
+
+
+
+
+
+  <title>In https response header, Does the value of Set-Cookie Domain need a leading dot？ | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2018/03/19/https-set-cookies/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">In https response header, Does the value of Set-Cookie Domain need a leading dot？</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-19T10:50:17+08:00">
+                2018-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>没错，大家也看到了这篇博客的标题是英文，这说明了什么呢？这说明了这是一个悲伤的故事，预示着作者心中的哀伤(苦笑脸)。其实最主要的原因是，用中文描述起来可能有点啰嗦。</p>
+<p>『Https请求的response的header中, Set-Cookie里的domain字段的值，是否需要以点.开头呢？』</p>
+<p>为什么会有这样的疑问？一切还要从一个月前的那件事说起~</p>
+<a id="more"></a>
+
+<hr>
+<h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><p>书归正文。先介绍一下业务背景。这次发生问题的登录业务。和大多数登录业务一样同样是基于Oauth登录，客户端访问授权方拿到授权，然后通过这份授权向认证服务器申请令牌(Token)。拿到Token后，客户端就可以合法的访问具体业务从而请求资源。大致的流程可以通过下图来表示</p>
+<p><img src="/img/2018-03-19-https-set-cookies-01.png" alt></p>
+<p>这次问题就发生在这个Token身上。客户端因为域名的调整导致拿不到Token了，引发了一系列问题。为了方便大家理解，我先简单的介绍下https关于下发Cookie的背景。</p>
+<p>我们知道，https下发Cookie信息, 其中一种方式是通过把Cookie信息存放在Response的Header里面的Set-Cookie中。</p>
+<p>假设下发Token的url是：</p>
+<p>  login.com</p>
+<p>在Response的Header中，以Set-Cookie为Key，存有Token信息，格式为:</p>
+<p>  token=xxxxxx;path=/;domain=login.com</p>
+<p>下图是我用Charles的抓包看response的header的截图，业务相关的地方打了马赛克，不影响理解。</p>
+<p><img src="/img/2018-03-19-https-set-cookies-02.png" alt></p>
+<p>而我们客户端要做的，就是从响应中取出这个Token的值，用于访问业务接口。而我们这边项目由于业务的原因，客户端这边从网络请求到拿Token实现方式有两套不同但又类似的代码，最终方式都是从请求的CookieManager中，直接根据key=token，取出对应的value。</p>
+<ul>
+<li>方式一：基于HttpURLConnection封装的网络请求，收到响应之后，从CookieManager中读取key为『token』的value。</li>
+<li>方式二：基于OkHttp封装的网络请求，同样的，收到响应之后，从CookieManager中读取key为『token』的value。</li>
+</ul>
+<p>可以用这段代码理解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call call, Response response)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    HttpCookie serviceTokenCookie = CookieUtil.getCookie(getCookieManager(), <span class="string">"token"</span>);</span><br><span class="line">    <span class="comment">//token不为空，表示成功拿到Token</span></span><br><span class="line">    String token = serviceTokenCookie.getValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="暴露问题"><a href="#暴露问题" class="headerlink" title="暴露问题"></a>暴露问题</h2><p>这次事情的起因是公司的MIUI国际部隐私团队提出要求，海外版内置App需要杜绝直接连国内服务器进行网络请求的情况。而我们登录业务的callback也需要做调整。调整方案是统一替换原有callback的域名。替换为海外服务访问域名。</p>
+<p>假设我们针对海外用户(比如说美国用户)的处理方式是提供海外子域名：</p>
+<p>  usa.login.com</p>
+<p>确定了针对海外用户的域名后。在保证业务逻辑一致的情况下，我们在测试环境下切换了callback的链接 login.com -&gt; usa.login.com。这时Set-Cookie的格式是：</p>
+<p>  token=xxxxxx;path=/;domain=login.com</p>
+<p>但是我们发现：域名切换后，方法一基于HttpURLConnection封装的网络请求，CookieManager读取不到key为『token』的cookie信息。但是方法二正常。</p>
+<p><img src="/img/2018-03-19-https-set-cookies-08.jpg" alt></p>
+<p>时间仓促，我们只能紧急查找方案。有同事提出，CookieManager拿不到Token，是不是因为callback的url加了usa.的前缀后，和Set-Cookie的domain无法正常匹配？于是我们抱着试试看的想法，在domain现有的值前面加上一个点.，也就是格式变成：</p>
+<p>  token=xxxxxx;path=/;domain=.login.com</p>
+<p>修改之后测试，结果又是大跌眼睛，方法一正常了，但是方法二基于OkHttp封装的网络请求，CookieManager读取不到key为『token』的cookie信息。</p>
+<p><img src="/img/2018-03-19-https-set-cookies-09.jpeg" alt></p>
+<p>时间仓促，我们只好再次尝试，domain改成当前callback url完整域名，这下两种方法都能正常获取到token了。</p>
+<p>  token=xxxxxx;path=/;domain=usa.login.com</p>
+<h2 id="查找原因"><a href="#查找原因" class="headerlink" title="查找原因"></a>查找原因</h2><p>作为一名程序猿，当然不能满足于只解决问题。我们首先查一下CookieManager的domain到底是怎么定义的？我们无意中在<a href="https://github.com/square/okhttp/pull/2722" target="_blank" rel="noopener">square/okhttp</a>的issues中，发现了这个issue</p>
+<p><a href="https://github.com/square/okhttp/pull/2722" target="_blank" rel="noopener">Inject a leading . for better matching under JavaNetCookieJar #2722</a></p>
+<p>里面核心的有这么一段话：</p>
+<p><img src="/img/2018-03-19-https-set-cookies-03.png" alt></p>
+<p>提到了两个关键词，『RFC 6265』和『RFC 2965』，然后又提到了okhttp遵循的是RFC 6265协议，而java.net遵循的是RFC 2965协议。通过这些线索，我们最后找到了原因。</p>
+<h2 id="HTTP-State-Management-Mechanism"><a href="#HTTP-State-Management-Mechanism" class="headerlink" title="HTTP State Management Mechanism"></a>HTTP State Management Mechanism</h2><p>HTTP State Management Mechanism(Http状态管理机制)，正是它规定了Set-Cookie中domain的写法。根据时间顺序，2000年10月份的<strong><em>RFC 2965</em></strong>协议在前，2011年4月份的<strong><em>RFC 6265</em></strong>在后。</p>
+<p><a href="https://www.ietf.org/rfc/rfc2965.txt" target="_blank" rel="noopener">RFC 2965</a></p>
+<p><img src="/img/2018-03-19-https-set-cookies-04.png" alt></p>
+<p><a href="https://tools.ietf.org/html/rfc6265" target="_blank" rel="noopener">RFC 6265</a></p>
+<p><img src="/img/2018-03-19-https-set-cookies-05.png" alt></p>
+<p>可以看到，<strong><em>RFC 6265</em></strong> 同时声明了 <strong><em>RFC 2965</em></strong> 过时。</p>
+<p>首先要说明的是，无论是哪份协议，都引入了一个概念，<strong>『domain-match』</strong>。请求头部的Set-Cookie的数据如果想合法的存到CookieManager中，需要保证url <strong>domain-match</strong> domain value string。如果不满足这个条件，CookieManager里也就不会有对应的数据。</p>
+<h3 id="RFC-2965"><a href="#RFC-2965" class="headerlink" title="RFC 2965"></a>RFC 2965</h3><p>让我们首先看一下RFC 2965是如何定义<strong>domain-match</strong>的？</p>
+<p><img src="/img/2018-03-19-https-set-cookies-06.png" alt></p>
+<p>这里主机名可以是IP地址，也可以是主机域名。可以很清楚的看到，假设有A和B两个主机名，如何判定A <strong>domain-match</strong> B呢？满足两个条件之一即可：</p>
+<ul>
+<li>A和B的主机名字符串相等，或者</li>
+<li>A是一个主机域名并且其可以看做NB的组合，N是一个非空的字符串，而B的格式必须是是.B，同时B也是主机域名。（所以说x.y.com <strong>domain-match</strong> .y.com,但是并不 <strong>domain-match</strong> y.com）</li>
+</ul>
+<p>根据这个定义，我们来复盘一下我们业务中的url和domain在<strong><em>RFC 2965</em></strong>的标准下，<strong>domain-match</strong>的情况分别是怎样？</p>
+<hr>
+<p><strong>业务调整前：</strong></p>
+<p>A(login.com), B(login.com)，满足<strong><em>RFC 2965</em></strong>条件一 A equals B，所以业务调整前的A domain-match B。</p>
+<p><strong>业务调整后第一次：</strong></p>
+<p>A(usa.login.com), B(login.com)，不满足<strong><em>RFC 2965</em></strong>的两个条件任何一个，所以<strong>A not domain-match B</strong>！！</p>
+<p><strong>业务调整后第二次：</strong></p>
+<p>A(usa.login.com), B(.login.com)，满足<strong><em>RFC 2965</em></strong>条件二，所以A domain-match B ！！</p>
+<p><strong>业务调整后第三次：</strong></p>
+<p>A(usa.login.com), B(usa.login.com)，再次又满足<strong><em>RFC 2965</em></strong>条件一 A equals B，所以业务调整前的A <strong>domain-match</strong> B。</p>
+<hr>
+<p>而基于HttpURLConnection封装的网络请求是源自于java.net，遵循<strong><em>RFC 2965</em></strong>，完全符合此前的现象！！</p>
+<h3 id="RFC-6265"><a href="#RFC-6265" class="headerlink" title="RFC 6265"></a>RFC 6265</h3><p>让我们再来看看<strong><em>RFC 6265</em></strong>又是怎么定义 <strong>domain-match</strong> 的呢？指的注意的是，这里不再采用A，B这样的说法，而是相对应的用一个字符串(a string)和域名字符串(the domain string)来表示。</p>
+<p><img src="/img/2018-03-19-https-set-cookies-07.png" alt></p>
+<p>同样也是两个条件满足一个</p>
+<ul>
+<li>域名字符串和字符串是相同的。（注意，在这一情况时域字符串和字符串都将被规范化为小写）。</li>
+<li>以下所有条件同时成立<ul>
+<li>域名字符串是该字符串的后缀</li>
+<li>该字符串的最后一个不包含在域名字符串的字符是%x2E（“.”）字符。</li>
+<li>该字符串是一个主机名（即不是一个IP地址）</li>
+</ul>
+</li>
+</ul>
+<p>第二个条件可能有点难理解。尤其是我们该怎么理解这里的『该字符串的最后一个不包含在域字符串的字符是%x2E（“.”）字符。』这句话呢？</p>
+<p>假如域字符串是A.com，字符串是B.A.com,那么最后一个不包含在域字符串的字符就是%x2E（“.”）字符（从后向前算）。<br>如果域字符串是.A.com，字符串是B.A.com,那么最后一个不包含在域字符串的字符就是B字符。</p>
+<p>同样的。我们来复盘一下两个domain在新标准<strong><em>RFC 6265</em></strong>下，domain-match的情况分别是怎样？</p>
+<hr>
+<p><strong>业务调整前：</strong></p>
+<p>A(login.com), B(login.com)，满足<strong><em>RFC 6265</em></strong>条件一 A equals B，所以业务调整前的A domain-match B。</p>
+<p><strong>业务调整后第一次：</strong></p>
+<p>A(usa.login.com), B(login.com)，满足<strong><em>RFC 6265</em></strong>的条件二，同样A domain-match B ！！</p>
+<p><strong>业务调整后第二次：</strong></p>
+<p>A(usa.login.com), B(.login.com)，<strong><em>RFC 6265</em></strong> 的两个条件都不满足，所以<strong>A not domain-match B</strong> ！！</p>
+<p><strong>业务调整后第三次：</strong></p>
+<p>A(usa.login.com), B(usa.login.com)，再次又满足<strong><em>RFC 6265</em></strong>条件一 A equals B，所以业务调整前的A domain-match B。</p>
+<hr>
+<p>可以看到，基于新标准<strong><em>RFC 6265</em></strong>okhttp网络库的情况，与该标准描述的情况也完全符合，</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>看到这，我们可以先得到一个结论。本次问题的出现，正是不同的网络请求库应用的HTTP State Management Mechanism标准不一致导致的。那么该如何处理呢？</p>
+<p>其实很简单，放弃原先从CookieManager中读取的方式(虽然它省事，也符合标准)，直接<strong>从response的header里手动解析</strong>，这样，无论Cookie遵循的是哪种规范，都不影响我们客户端最终读取数据。</p>
+<p>事情到这本应该告一段落了，但不死心的程序猿们，想继续深入一下源码，看看到底是哪里的代码导致的问题呢？结果又有了意外发现。</p>
+<h2 id="分析源码"><a href="#分析源码" class="headerlink" title="分析源码"></a>分析源码</h2><p>HttpURLConnection这部分没什么好说的，判断<strong>domain-match</strong>的方法也正如前面所说的，基于的是<strong><em>RFC 2965</em></strong>协议的标准。没有leading dot的话是不会判断为<strong>domain-match</strong>的。让我们好奇的是，okhttp基于的虽然是新的协议，但是为什么没有兼容老版本的协议呢？</p>
+<p>我们这里的OkHttpClient是这样构造的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mOkHttpClient = <span class="keyword">new</span> OkHttpClient.Builder()</span><br><span class="line">        .dispatcher(</span><br><span class="line">                <span class="keyword">new</span> Dispatcher(<span class="keyword">new</span> ThreadPoolExecutor(<span class="number">6</span>, Integer.MAX_VALUE, <span class="number">60</span>,</span><br><span class="line">                        TimeUnit.SECONDS, <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(),</span><br><span class="line">                        Util.threadFactory(<span class="string">"OkHttp Dispatcher"</span>, <span class="keyword">false</span>))))</span><br><span class="line">        .connectTimeout(<span class="number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">        .readTimeout(<span class="number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">        .writeTimeout(<span class="number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">        .cookieJar(<span class="keyword">new</span> JavaNetCookieJar(mCookieManager = <span class="keyword">new</span> CookieManager()))</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+<p>可以看到我这里用的cookieJar是JavaNetCookieJar。而在JavaNetCookieJar用到的Cookie这个类发现了domainMatch(HttpUrl url, String domain)：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">domainMatch</span><span class="params">(HttpUrl url, String domain)</span> </span>&#123;</span><br><span class="line">    String urlHost = url.host();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (urlHost.equals(domain)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>; <span class="comment">// As in 'example.com' matching 'example.com'.</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (urlHost.endsWith(domain)</span><br><span class="line">        &amp;&amp; urlHost.charAt(urlHost.length() - domain.length() - <span class="number">1</span>) == <span class="string">'.'</span></span><br><span class="line">        &amp;&amp; !verifyAsIpAddress(urlHost)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>; <span class="comment">// As in 'example.com' matching 'www.example.com'.</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而调domainMatch(HttpUrl url, String domain)之前，domain有经过处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns a domain string like &#123;<span class="doctag">@code</span> example.com&#125; for an input domain like &#123;<span class="doctag">@code</span> EXAMPLE.COM&#125;</span></span><br><span class="line"><span class="comment"> * or &#123;<span class="doctag">@code</span> .example.com&#125;.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> String <span class="title">parseDomain</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (s.endsWith(<span class="string">"."</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//注意这里！！</span></span><br><span class="line">  <span class="keyword">if</span> (s.startsWith(<span class="string">"."</span>)) &#123;</span><br><span class="line">    s = s.substring(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  String canonicalDomain = domainToAscii(s);</span><br><span class="line">  <span class="keyword">if</span> (canonicalDomain == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> canonicalDomain;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们看到这里JavaNetCookieJar主动的去除掉了domain前面的leading dot！！额？看到这就奇怪了，也就是说，其实okhttp是兼容了老版本协议带leading dot的情况。也就是说A(usa.login.com), B(.login.com)这种情况，B(.login.com)移除掉leading dot就变成B(login.com), 应该能A <strong>domain-match</strong> B 啊？</p>
+<p>看到这，我不禁怀疑起来，那我们业务之前遇到的cookie取不到对应数据的原因到底是什么呢？这时，我又看到了这个issue：</p>
+<p><a href="https://github.com/square/okhttp/issues/2549" target="_blank" rel="noopener">okhttp Cookie strips off leading . from domain #2549</a></p>
+<p><img src="/img/2018-03-19-https-set-cookies-10.png" alt></p>
+<p>通过这份issue我们可以看到，这是okhttp当初的一个bug，虽然移除掉domain前面的leading dot，但是由于Android本身的CookiePolicy为ACCEPT_ORIGINAL_SERVER, 如果使用时结合JavaNetCookieStore和CookieManger时，这样的cookie数据是会被抛弃的!!CookieManager自然拿不到Token了。</p>
+<p>并且这个bug在2016年7月份就commit修复。原来是我们项目中的okhttp版本号太旧了。因为项目中集成ReactNative的关系，目前使用的还是3.4.1的老版本，升级的话需要ReactNative这边各种依赖库同时升级，所以当前项目中的okhttp还是很早前的版本。不过正所谓无巧不成书，正好我们乘着这个机会，来看一下旧版本的okhttp为什么丢掉了这个cookie字段呢？</p>
+<p>来看一下 JavaNetCookieJar.class</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveFromResponse</span><span class="params">(HttpUrl url, List&lt;Cookie&gt; cookies)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (cookieHandler != <span class="keyword">null</span>) &#123;</span><br><span class="line">      List&lt;String&gt; cookieStrings = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">      <span class="keyword">for</span> (Cookie cookie : cookies) &#123;</span><br><span class="line">        <span class="comment">//问题出在这个cookie.toString()，在toString()之前，cookie的domain的leading dot就被抛删掉了</span></span><br><span class="line">        cookieStrings.add(cookie.toString());</span><br><span class="line">      &#125;</span><br><span class="line">      Map&lt;String, List&lt;String&gt;&gt; multimap = Collections.singletonMap(<span class="string">"Set-Cookie"</span>, cookieStrings);</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        cookieHandler.put(url.uri(), multimap);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        Platform.get().log(WARN, <span class="string">"Saving cookies failed for "</span> + url.resolve(<span class="string">"/..."</span>), e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来看一下Cookie的toString()方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    result.append(name);</span><br><span class="line">    result.append(<span class="string">'='</span>);</span><br><span class="line">    result.append(value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">      <span class="keyword">if</span> (expiresAt == Long.MIN_VALUE) &#123;</span><br><span class="line">        result.append(<span class="string">"; max-age=0"</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result.append(<span class="string">"; expires="</span>).append(HttpDate.format(<span class="keyword">new</span> Date(expiresAt)));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!hostOnly) &#123;</span><br><span class="line">      <span class="comment">//问题在这里，还记得okhttp将domain的leading dot给移除了对嘛？这里原本domain已经不是.login.com,而是login.com</span></span><br><span class="line">      result.append(<span class="string">"; domain="</span>).append(domain);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    result.append(<span class="string">"; path="</span>).append(path);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (secure) &#123;</span><br><span class="line">      result.append(<span class="string">"; secure"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (httpOnly) &#123;</span><br><span class="line">      result.append(<span class="string">"; httponly"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>前面我们提到JavaNetCookieJar配合Android的CookieManager会导致这个bug。果不其然我们看到put(URI uri, Map&lt;String, List<string>&gt; responseHeaders)方法，<br>我们发现，cookieJar存cookie的时候，不是所有的cookie都被存下来了。而是有一步过滤！！也就是这个shouldAcceptInternal()方法,那这到底过滤掉什么cookie呢？</string></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(URI uri, Map&lt;String, List&lt;String&gt;&gt; responseHeaders)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">//...省略若干代码...</span></span><br><span class="line">    <span class="comment">// Domain  Defaults to the effective request-host.  (Note that because</span></span><br><span class="line">    <span class="comment">// there is no dot at the beginning of effective request-host,</span></span><br><span class="line">    <span class="comment">// the default Domain can only domain-match itself.)</span></span><br><span class="line">    <span class="keyword">if</span> (cookie.getDomain() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        cookie.setDomain(uri.getHost());</span><br><span class="line">    &#125;</span><br><span class="line">    String ports = cookie.getPortlist();</span><br><span class="line">    <span class="keyword">if</span> (ports != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> port = uri.getPort();</span><br><span class="line">        <span class="keyword">if</span> (port == -<span class="number">1</span>) &#123;</span><br><span class="line">            port = <span class="string">"https"</span>.equals(uri.getScheme()) ? <span class="number">443</span> : <span class="number">80</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (ports.isEmpty()) &#123;</span><br><span class="line">            <span class="comment">// Empty port list means this should be restricted</span></span><br><span class="line">            <span class="comment">// to the incoming URI port</span></span><br><span class="line">            cookie.setPortlist(<span class="string">""</span> + port );</span><br><span class="line">            <span class="keyword">if</span> (shouldAcceptInternal(uri, cookie)) &#123;</span><br><span class="line">                cookieJar.add(uri, cookie);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Only store cookies with a port list</span></span><br><span class="line">            <span class="comment">// IF the URI port is in that list, as per</span></span><br><span class="line">            <span class="comment">// RFC 2965 section 3.3.2</span></span><br><span class="line">            <span class="keyword">if</span> (isInPortList(ports, port) &amp;&amp;</span><br><span class="line">                  shouldAcceptInternal(uri, cookie)) &#123;</span><br><span class="line">                <span class="comment">//只有符合条件的cookie，才会被存下来塞到CookieManager中</span></span><br><span class="line">                cookieJar.add(uri, cookie);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (shouldAcceptInternal(uri, cookie)) &#123;</span><br><span class="line">            cookieJar.add(uri, cookie);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再结合CookiePolicy的代码一看就了然了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CookiePolicy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//...省略若干代码...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * One pre-defined policy which only accepts cookies from original server.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> CookiePolicy ACCEPT_ORIGINAL_SERVER  = <span class="keyword">new</span> CookiePolicy()&#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldAccept</span><span class="params">(URI uri, HttpCookie cookie)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> HttpCookie.domainMatches(cookie.getDomain(), uri.getHost());</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没错，如果CookiePolicy是ACCEPT_ORIGINAL_SERVER的话，过滤掉的正是不符合HttpCookie.domainMatches()的cookie。而HttpCookie.domainMatches(),是遵循老版本<strong><em>RFC 2965</em></strong>协议的！！okhttp把domain的leading dot去掉，虽然通过了自己本身的domainMatch()方法，但是没想到，<strong>Android系统又过滤了一道，真是太坑了</strong>！！</p>
+<p>那okhttp是如何修复这个bug的呢？大家可以参考okhttp这个commiit</p>
+<p><a href="https://github.com/square/okhttp/commit/fd509b937c4a5438fe02ddf06ade5ad56736af5d" target="_blank" rel="noopener">Inject a leading . for better matching under JavaNetCookieJar</a></p>
+<p>其实也很简单，就是第一个okhttp的domainMatch()方法判断前，去掉leading dot。然后在第二步Android系统的domainMatch()方法判断前，再把leading dot主动加回来！！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> forObsoleteRfc2965 true to include a leading &#123;<span class="doctag">@code</span> .&#125; on the domain pattern. This is</span></span><br><span class="line"><span class="comment"> *     necessary for &#123;<span class="doctag">@code</span> example.com&#125; to match &#123;<span class="doctag">@code</span> www.example.com&#125; under RFC 2965. This</span></span><br><span class="line"><span class="comment"> *     extra dot is ignored by more recent specifications.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">String <span class="title">toString</span><span class="params">(<span class="keyword">boolean</span> forObsoleteRfc2965)</span> </span>&#123;</span><br><span class="line">  StringBuilder result = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">  result.append(name);</span><br><span class="line">  result.append(<span class="string">'='</span>);</span><br><span class="line">  result.append(value);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (persistent) &#123;</span><br><span class="line">    <span class="keyword">if</span> (expiresAt == Long.MIN_VALUE) &#123;</span><br><span class="line">      result.append(<span class="string">"; max-age=0"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result.append(<span class="string">"; expires="</span>).append(HttpDate.format(<span class="keyword">new</span> Date(expiresAt)));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!hostOnly) &#123;</span><br><span class="line">    result.append(<span class="string">"; domain="</span>);</span><br><span class="line">    <span class="keyword">if</span> (forObsoleteRfc2965) &#123;</span><br><span class="line">      <span class="comment">//就是这里，为了兼容RFC 2965协议，主动补充一个leading dot</span></span><br><span class="line">      result.append(<span class="string">"."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    result.append(domain);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  result.append(<span class="string">"; path="</span>).append(path);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (secure) &#123;</span><br><span class="line">    result.append(<span class="string">"; secure"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (httpOnly) &#123;</span><br><span class="line">    result.append(<span class="string">"; httponly"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总结一下，啰哩啰嗦说了这么多，其实可以简单总结成以下几点：</p>
+<ol>
+<li><p>HTTP State Management Mechanism协议针对domain-match的定义，从<strong><em>RFC 2965</em></strong>到<strong><em>RFC 6265</em></strong>有一个条件发生了很大的变化，也就是要不要leading dot的问题。<strong><em>RFC 2965</em></strong> 协议是要求一定要有leading dot的，而<strong><em>RFC 6265</em></strong>协议则明确要求不可以有leading dot。</p>
+</li>
+<li><p>在Android的网络请求库中，okhttp遵循的是<strong><em>RFC 6265</em></strong>协议，而java.net遵循的是<strong><em>RFC 2965</em></strong>协议。这是一个大坑，也就是意味着，如果我们采用从CookieManager中读取数据的方式的话，都需要注意着ddomain-match定义的兼容性。</p>
+</li>
+<li><p>okhttp不愧是Android最优秀的网络请求库，最新版本已经修复了leading dot导致的在Android CookieManager中使用JavaNetCookieJar的bug。也就是说，使用okhttp是可以做到两种协议在domain-match定义上的兼容。这对开发者来说是好事情。但是，可能你和我们一样，项目中引入了ReactNative导致很多库的版本不是最新版，还带着老版本的bug。所以，<strong>强烈建议Android开发者手动从Header中解析Set-Cookie，而不是依赖CookieManager</strong>。</p>
+</li>
+<li><p>问题本身很简单，但是表象可能很复杂。所以，遇到问题我们要尽可能的深入，找到原因。</p>
+</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://maimai.cn/article/detail?fid=305722856" target="_blank" rel="noopener">HTTP、Cookie、Session、token</a></li>
+<li><a href="https://segmentfault.com/a/1190000004556040" target="_blank" rel="noopener">聊一聊 cookie</a></li>
+<li><a href="https://tools.ietf.org/html/rfc6265" target="_blank" rel="noopener">HTTP State Management Mechanism 6265</a></li>
+<li><a href="https://www.ietf.org/rfc/rfc2965.txt" target="_blank" rel="noopener">HTTP State Management Mechanism 2965</a></li>
+<li><a href="https://github.com/renaesop/blog/issues/4" target="_blank" rel="noopener">cookie规范（RFC 6265）翻译</a></li>
+<li><a href="http://blog.csdn.net/xuejunzhao0423/article/details/44407427" target="_blank" rel="noopener">HTTP 状态管理机制——RFC6265翻译文档</a></li>
+<li><a href="https://segmentfault.com/a/1190000006793412" target="_blank" rel="noopener">Http 状态管理机制(cookie) (译文)</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/04/facebook-sdk-cta/" rel="next" title="记一次APP集成facebook SDK引发的事件及调查">
+                <i class="fa fa-chevron-left"></i> 记一次APP集成facebook SDK引发的事件及调查
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/30/android-support-library/" rel="prev" title="Android开发中陌生的老相识(1)--Android Support Library">
+                Android开发中陌生的老相识(1)--Android Support Library <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露问题"><span class="nav-number">2.</span> <span class="nav-text">暴露问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找原因"><span class="nav-number">3.</span> <span class="nav-text">查找原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-State-Management-Mechanism"><span class="nav-number">4.</span> <span class="nav-text">HTTP State Management Mechanism</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RFC-2965"><span class="nav-number">4.1.</span> <span class="nav-text">RFC 2965</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RFC-6265"><span class="nav-number">4.2.</span> <span class="nav-text">RFC 6265</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">5.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析源码"><span class="nav-number">6.</span> <span class="nav-text">分析源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

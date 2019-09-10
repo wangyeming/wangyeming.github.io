@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="好久没有写技术博客了，随着工作中业务的成长的同时，也愈发感受到基础的重要性。有很多我们平时Android开发经常会接触到的事物，由于太过于常见，或者各种开发工具封装的太过完善，导致我们实际上对他们并没有我们想象中的那么熟悉(也就是我说的『陌生的老相识』)。 温故知新，也借此机会刨根问底，打算写一个系列，好好的介绍下这些『老相识』。每篇篇幅不长。第一篇选中的是Android Support库。">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发中陌生的老相识(1)--Android Support Library">
+<meta property="og:url" content="http://wangyeming.github.com/2018/08/30/android-support-library/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="好久没有写技术博客了，随着工作中业务的成长的同时，也愈发感受到基础的重要性。有很多我们平时Android开发经常会接触到的事物，由于太过于常见，或者各种开发工具封装的太过完善，导致我们实际上对他们并没有我们想象中的那么熟悉(也就是我说的『陌生的老相识』)。 温故知新，也借此机会刨根问底，打算写一个系列，好好的介绍下这些『老相识』。每篇篇幅不长。第一篇选中的是Android Support库。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wangyeming.github.com/img/2018-08-30-android-support-library-01.png">
+<meta property="og:updated_time" content="2019-09-09T12:30:06.607Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发中陌生的老相识(1)--Android Support Library">
+<meta name="twitter:description" content="好久没有写技术博客了，随着工作中业务的成长的同时，也愈发感受到基础的重要性。有很多我们平时Android开发经常会接触到的事物，由于太过于常见，或者各种开发工具封装的太过完善，导致我们实际上对他们并没有我们想象中的那么熟悉(也就是我说的『陌生的老相识』)。 温故知新，也借此机会刨根问底，打算写一个系列，好好的介绍下这些『老相识』。每篇篇幅不长。第一篇选中的是Android Support库。">
+<meta name="twitter:image" content="http://wangyeming.github.com/img/2018-08-30-android-support-library-01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2018/08/30/android-support-library/">
+
+
+
+
+
+  <title>Android开发中陌生的老相识(1)--Android Support Library | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2018/08/30/android-support-library/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android开发中陌生的老相识(1)--Android Support Library</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-30T18:04:33+08:00">
+                2018-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android开发中陌生的老相识/" itemprop="url" rel="index">
+                    <span itemprop="name">Android开发中陌生的老相识</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>好久没有写技术博客了，随着工作中业务的成长的同时，也愈发感受到基础的重要性。有很多我们平时Android开发经常会接触到的事物，由于太过于常见，或者各种开发工具封装的太过完善，导致我们实际上对他们并没有我们想象中的那么熟悉(也就是我说的『陌生的老相识』)。 温故知新，也借此机会刨根问底，打算写一个系列，好好的介绍下这些『老相识』。每篇篇幅不长。第一篇选中的是<strong>Android Support库</strong>。</p>
+<a id="more"></a>
+
+<h1 id="提一些问题"><a href="#提一些问题" class="headerlink" title="提一些问题"></a>提一些问题</h1><p>先提几个问题，看看大家能不能回答上来:</p>
+<ol>
+<li>在已知项目的compileSdkVersion的情况下，Support库的版本号应该设置为多少？大版本号必须相等吗？可以低于或者高于compileSdkVersion吗？</li>
+<li>除了Fragment，ViewPager这些向下兼容的类，你还知道哪些Support库为开发提供了哪些其它功能</li>
+<li>什么时候应该去更新Support库的版本？Support库的接口总是兼容低版本的吗？升级有没有坑？</li>
+<li>support库的v4,v7,v8，v13都是什么意思？这些support库都是干什么的？</li>
+<li>如果项目依赖的库自身依赖了support库和app本身依赖的support库版本号不一致，会有冲突吗？如果想排除第三方库本身依赖的support库，该如何做？</li>
+</ol>
+<p>嘿嘿，如果对这些问题又有疑惑的话，不妨看看本文。</p>
+<hr>
+<h1 id="Support库的用途"><a href="#Support库的用途" class="headerlink" title="Support库的用途"></a>Support库的用途</h1><p>按照官方的解释，Support库主要有以下三个用途：</p>
+<h2 id="Backward-Compatibility-for-newer-APIs-为新API提供向后兼容性"><a href="#Backward-Compatibility-for-newer-APIs-为新API提供向后兼容性" class="headerlink" title="Backward Compatibility for newer APIs (为新API提供向后兼容性)"></a>Backward Compatibility for newer APIs (为新API提供向后兼容性)</h2><p>这个是support最广为认知的用途。support库本身提供了大量的类和方法，为新的SDK新增的功能做支持。类的话如Fragmemt，ViewPager等。方法的话,例如getColor()方法，如果不借助support库的话，需要这么写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">23</span>) &#123;</span><br><span class="line">     context.getColor(id);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     context.getResources().getColor(id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而借助support库，我们一行搞定，不用再代码里强行嵌入恶心的API判断：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ContextCompat.getColor(context, R.color.red);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Convenience-and-Helper-Classes-便利和帮助类"><a href="#Convenience-and-Helper-Classes-便利和帮助类" class="headerlink" title="Convenience and Helper Classes (便利和帮助类)"></a>Convenience and Helper Classes (便利和帮助类)</h2><p>例如RecyclerView，就是support库为Android开发者提供的列表展示ui组件。</p>
+<h2 id="Debugging-and-Utilities-调试和实用工具"><a href="#Debugging-and-Utilities-调试和实用工具" class="headerlink" title="Debugging and Utilities (调试和实用工具)"></a>Debugging and Utilities (调试和实用工具)</h2><p>比如说，MultiDex可以帮助我们应对65536问题。<br>再例如借助Annotations Support Library，我们可以在代码中注解帮助静态代码分析。举个例子:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">(Person person)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//may preduce npe</span></span><br><span class="line">    <span class="keyword">return</span> person.age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">(@Nullable Person person)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(person == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果没上面的判空，编译器会提醒你这里可能会存在空指针</span></span><br><span class="line">    <span class="keyword">return</span> person.age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">(@NonNull Person person)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 无需判空，调用的地方，编译器会提示。</span></span><br><span class="line">    <span class="keyword">return</span> person.age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总而言之，针对使用support库和框架API，官方总结了以下三点差异：</p>
+<ul>
+<li>Compatibility for a Specific Feature</li>
+<li>Compatibility for Related Library Features</li>
+<li>General Device Compatibility</li>
+</ul>
+<h1 id="Version-Support-and-Package-Names-支持的版本和包名"><a href="#Version-Support-and-Package-Names-支持的版本和包名" class="headerlink" title="Version Support and Package Names (支持的版本和包名)"></a>Version Support and Package Names (支持的版本和包名)</h1><p>展开AndroidStudio的External Libraries，我们可以看到项目中依赖的support库</p>
+<p><img src="/img/2018-08-30-android-support-library-01.png" alt></p>
+<p>首先我们知道，support包的包名总是以 『com.android.support』开头，中间是具体的名称，如：support-v4,support-fragment, recyclerview-v7, support-compat等最后跟上版本号</p>
+<p>一些包是以#+最低支持的API版本号命名的，如我们熟悉的support-v4包。<br>从2017年7月开始的26.0.0的Support库，最低支持的版本号是Android 4.0(API 14).所以像<br>support-v7包和support-v4包。最低支持API都是14.</p>
+<p>同时，support包我们知道版本号是a.b.c的格式，例如26.0.2,25.0.1等。其中大版本号也就是与构建库是最新的SDK版本号是一致的。也就是说，26.0。0的support提供了对26及以前版本API的支持(就别希望会提供对27及以后API的支持)</p>
+<p>这句话的意思也就是说，假如我们的compileSdkVersion是26，那最好support的library是<strong>大于等于26</strong>的，26以下的support库没办法保证对26的兼容性。也肯定不会提供27之后才有的新特性。</p>
+<p>那我们去哪里找Support库的版本发布历史呢？</p>
+<p><a href="https://developer.android.com/topic/libraries/support-library/revisions" target="_blank" rel="noopener">Android Support Library Revisions</a> </p>
+<h1 id="Support-Library-Packages-都有哪些Support库"><a href="#Support-Library-Packages-都有哪些Support库" class="headerlink" title="Support Library Packages (都有哪些Support库)"></a>Support Library Packages (都有哪些Support库)</h1><p>大的分类来说，目前就有以下这些,种类很多，我们就挑几个最常见的做下介绍:</p>
+<ul>
+<li>v4 Support Libraries</li>
+<li>Multidex Support Library</li>
+<li>v7 Support Libraries</li>
+<li>v8 Support Library</li>
+<li>v13 Support Library</li>
+<li>v14 Preference Support Library</li>
+<li>v17 Preference Support Library for TV</li>
+<li>v17 Leanback Library</li>
+<li>Vector Drawable Library</li>
+<li>Animated Vector Drawable Library</li>
+<li>Annotations Support Library</li>
+<li>Design Support Library</li>
+<li>Custom Tabs Support Library</li>
+<li>Percent Support Library</li>
+<li>ExifInterface Support Library</li>
+<li>App Recommendation Support Library for TV</li>
+<li>Wear UI Library</li>
+</ul>
+<h2 id="v4-Support-Libraries"><a href="#v4-Support-Libraries" class="headerlink" title="v4 Support Libraries"></a>v4 Support Libraries</h2><p>这个v4大类下的support库平时开发用的非常多，像support-core-utils,support-core-ui,support-fragment等都是最常用的。</p>
+<h2 id="Multidex-Support-Library"><a href="#Multidex-Support-Library" class="headerlink" title="Multidex Support Library"></a>Multidex Support Library</h2><p>支持多dex，不用多解释</p>
+<h2 id="v7-Support-Libraries"><a href="#v7-Support-Libraries" class="headerlink" title="v7 Support Libraries"></a>v7 Support Libraries</h2><p>v7包提供了很多对Material Design UI组件的支持，例如Action Bar,cardview,gridlayout，recyclerview等等。</p>
+<h2 id="Annotations-Support-Library"><a href="#Annotations-Support-Library" class="headerlink" title="Annotations Support Library"></a>Annotations Support Library</h2><p>这个注解库非常好用，用的好的可以大幅减少各类调用时的空指针，对lint等静态代码分析都很有帮助。常见的如@Nullable,@NonNull,@IntDef,@StringDef 等都是开发的好助手。前面举了@Nullable,@NonNull的例子，这里举个我们开发中最常见的一类问题，常量参数。</p>
+<p>有些时候我们定义了一些type，整形或者字符串格式(定义枚举总是麻烦)例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义一些int常量</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE1 = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE2 = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE3 = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这里参数type完全是没有约束的，很可能传不合法的值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> type)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//调用方传了个不合法的值，然而这种问题很难被发现</span></span><br><span class="line">func(-<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">借助Annotations Support Library的<span class="meta">@IntDef</span>注解，一切就好多了</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line"><span class="meta">@IntDef</span>(&#123;</span><br><span class="line">    TYPE1, TYPE2, TYPE3</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Type &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里参数type有了注解，编译器和lint都会告诉我们传的值是否合法，而且对函数的调用方而言也相当于很好的注释</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">func</span><span class="params">(@Type <span class="keyword">int</span> type)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体的可以看Android官方文档：</p>
+<p><a href="https://developer.android.com/topic/libraries/support-library/packages" target="_blank" rel="noopener">Support Library Packages</a></p>
+<h1 id="问题解答"><a href="#问题解答" class="headerlink" title="问题解答"></a>问题解答</h1><ul>
+<li>在已知项目的compileSdkVersion的情况下，Support库的版本号应该设置为多少？大版本号必须相等吗？可以低于或者高于compileSdkVersion吗？</li>
+</ul>
+<p>Support Library Version 最好大于等于 compileSdkVersion</p>
+<ul>
+<li>除了Fragment，ViewPager这些向下兼容的类，你还知道哪些Support库为开发提供了哪些其它功能</li>
+</ul>
+<p>这个前面都说过了。</p>
+<ul>
+<li>什么时候应该去更新Support库的版本？Support库的接口总是兼容低版本的吗？升级有没有坑？</li>
+</ul>
+<p>一般情况下，Support Library Version和compileSdkVersion大版本保持一致，小版本最新即可。升级compileSdkVersion的时候可以去升级Support Library Version，Support库的接口并不总是兼容低版本的Support库的，而且很多类经常挪动位置，有些类还经常由其它类替换，这个只能升级的时候去摸索了。大部分情况没什么改动。</p>
+<ul>
+<li>support库的v4,v7,v8，v13都是什么意思？这些support库都是干什么的？</li>
+</ul>
+<p>数字通常表示支持的最低API版本号，具体干什么的前面也都有介绍了。</p>
+<ul>
+<li>如果项目依赖的库自身依赖了support库和app本身依赖的support库版本号不一致，会有冲突吗？如果想排除第三方库本身依赖的support库，该如何做？</li>
+</ul>
+<p>不会有冲突，不同版本号的support库通过可以并存在项目的依赖中，具体可以在Android Studio的External Libraries里面看到，经常会看到好几个版本的support依赖。</p>
+<p>如果想排除第三方库本身依赖的support库，gradle依赖可以这么写：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">api (xxxxxx) &#123;</span><br><span class="line">     exclude <span class="string">group:</span> <span class="string">'com.android.support'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果只想exludesupport某个具体的包，可以这样写：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">api (xxxxxx) &#123;</span><br><span class="line">    exclude <span class="string">group:</span> <span class="string">'com.android.support'</span> ,<span class="string">module:</span> <span class="string">'support-annotations'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考文档：</p>
+<p><a href="https://developer.android.com/topic/libraries/support-library/" target="_blank" rel="noopener">Android官方对Support Library的介绍</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/19/https-set-cookies/" rel="next" title="In https response header, Does the value of Set-Cookie Domain need a leading dot？">
+                <i class="fa fa-chevron-left"></i> In https response header, Does the value of Set-Cookie Domain need a leading dot？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/31/android-target-SDK/" rel="prev" title="Android Target SDK升级一路趟坑记">
+                Android Target SDK升级一路趟坑记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#提一些问题"><span class="nav-number">1.</span> <span class="nav-text">提一些问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Support库的用途"><span class="nav-number">2.</span> <span class="nav-text">Support库的用途</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Backward-Compatibility-for-newer-APIs-为新API提供向后兼容性"><span class="nav-number">2.1.</span> <span class="nav-text">Backward Compatibility for newer APIs (为新API提供向后兼容性)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Convenience-and-Helper-Classes-便利和帮助类"><span class="nav-number">2.2.</span> <span class="nav-text">Convenience and Helper Classes (便利和帮助类)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Debugging-and-Utilities-调试和实用工具"><span class="nav-number">2.3.</span> <span class="nav-text">Debugging and Utilities (调试和实用工具)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Version-Support-and-Package-Names-支持的版本和包名"><span class="nav-number">3.</span> <span class="nav-text">Version Support and Package Names (支持的版本和包名)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Support-Library-Packages-都有哪些Support库"><span class="nav-number">4.</span> <span class="nav-text">Support Library Packages (都有哪些Support库)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#v4-Support-Libraries"><span class="nav-number">4.1.</span> <span class="nav-text">v4 Support Libraries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multidex-Support-Library"><span class="nav-number">4.2.</span> <span class="nav-text">Multidex Support Library</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v7-Support-Libraries"><span class="nav-number">4.3.</span> <span class="nav-text">v7 Support Libraries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Annotations-Support-Library"><span class="nav-number">4.4.</span> <span class="nav-text">Annotations Support Library</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题解答"><span class="nav-number">5.</span> <span class="nav-text">问题解答</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
