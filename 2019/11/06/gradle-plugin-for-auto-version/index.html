@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Gradle,Maven,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="在Android开发中，通过maven仓库管理SDK的版本、上传、依赖是很常见的方式。而其中版本号的管理是很多人忽略的点。本篇以实现一个自动管理SDK上传maven版本号的gradle插件为目标，说一说其中的门道。">
+<meta name="keywords" content="Android,Gradle,Maven">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动生成SDK 上传Maven仓库的版本号插件">
+<meta property="og:url" content="http://wangyeming.github.com/2019/11/06/gradle-plugin-for-auto-version/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="在Android开发中，通过maven仓库管理SDK的版本、上传、依赖是很常见的方式。而其中版本号的管理是很多人忽略的点。本篇以实现一个自动管理SDK上传maven版本号的gradle插件为目标，说一说其中的门道。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wangyeming.github.com/img/2019-11-06-gradle-plugin-for-auto-version-01.png">
+<meta property="og:image" content="http://wangyeming.github.com/img/2019-11-06-gradle-plugin-for-auto-version-02.png">
+<meta property="og:updated_time" content="2019-11-08T08:35:54.075Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自动生成SDK 上传Maven仓库的版本号插件">
+<meta name="twitter:description" content="在Android开发中，通过maven仓库管理SDK的版本、上传、依赖是很常见的方式。而其中版本号的管理是很多人忽略的点。本篇以实现一个自动管理SDK上传maven版本号的gradle插件为目标，说一说其中的门道。">
+<meta name="twitter:image" content="http://wangyeming.github.com/img/2019-11-06-gradle-plugin-for-auto-version-01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2019/11/06/gradle-plugin-for-auto-version/">
+
+
+
+
+
+  <title>自动生成SDK 上传Maven仓库的版本号插件 | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2019/11/06/gradle-plugin-for-auto-version/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自动生成SDK 上传Maven仓库的版本号插件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-06T17:14:29+08:00">
+                2019-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在Android开发中，通过maven仓库管理SDK的版本、上传、依赖是很常见的方式。而其中版本号的管理是很多人忽略的点。本篇以实现一个自动管理SDK上传maven版本号的gradle插件为目标，说一说其中的门道。</p>
+<a id="more"></a>
+
+<h1 id="通过Maven管理SDK包"><a href="#通过Maven管理SDK包" class="headerlink" title="通过Maven管理SDK包"></a>通过Maven管理SDK包</h1><h2 id="三类第三方库"><a href="#三类第三方库" class="headerlink" title="三类第三方库"></a>三类第三方库</h2><p>Android开发中，我们以『包』的形式引入第三方的库，大致可以分为三类：</p>
+<ul>
+<li>以C和C++为语言生成的动态连接库，也就是so文件</li>
+<li>以Java为语言生成的归档文件，也就是Jar文件</li>
+<li>Android独有的包含资源文件的Android模块包，也就是aar文件</li>
+</ul>
+<h2 id="Gradle支持对maven仓库包依赖"><a href="#Gradle支持对maven仓库包依赖" class="headerlink" title="Gradle支持对maven仓库包依赖"></a>Gradle支持对maven仓库包依赖</h2><p>通常除了直接导入包文件到项目中之外，Android官方提供的默认的依赖及编译工具Gradle，支持项目直接引入对Maven库中已有的资源包进行依赖。作为Android开发者而言，再熟悉不过了。例如依赖okhttp，我们可能只需要在模块的build.gradle文件中加入这么一行：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'com.squareup.okhttp3:okhttp:3.12.0'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="maven插件上传SDK"><a href="#maven插件上传SDK" class="headerlink" title="maven插件上传SDK"></a>maven插件上传SDK</h2><p>对于SDK开发者而言，通常我们也是期望把自己的SDK上传到指定的maven仓库中，而客户端只需要简单的申明对SDK的某个版本的依赖，就可以了。通常情况下，我们会通过一个叫「maven」的gradle插件，来帮助我们上传SDK到maven仓库中。我们来简单回顾一下步骤：</p>
+<p>首先是在模块的build.gralde下，申明引入『maven』插件：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">'maven'</span></span><br></pre></td></tr></table></figure>
+
+<p>假设我们的SDK包含Android的资源，也就是生成aar文件，那么我们申明如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">uploadArchives&#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenDeployer &#123;</span><br><span class="line">            repository(<span class="string">url:</span> release_repository_url) &#123;</span><br><span class="line">                authentication(<span class="string">userName:</span> <span class="string">"your user name"</span>, <span class="string">password:</span> <span class="string">"your password"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            snapshotRepository(<span class="string">url:</span> snapshot_repository_url) &#123;</span><br><span class="line">                authentication(<span class="string">userName:</span> <span class="string">"your user name"</span>, <span class="string">password:</span> <span class="string">"your password"</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            pom.version = <span class="string">"版本名称"</span></span><br><span class="line">            pom.project &#123;</span><br><span class="line">                artifactId = <span class="string">"your artifactId"</span></span><br><span class="line">                groupId = <span class="string">"your group id"</span></span><br><span class="line">                packaging = <span class="string">'aar'</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以前面说的okhttp为例，”com.squareup.okhttp3”就是groupId, “okhttp”是artifactId，版本号则是在pom.version处申明。</p>
+<p>到这里，回顾完一个Android SDK基本的上传流程了。接下来我们来说下版本号的问题。</p>
+<h1 id="SDK版本号"><a href="#SDK版本号" class="headerlink" title="SDK版本号"></a>SDK版本号</h1><h2 id="正式版和快照版"><a href="#正式版和快照版" class="headerlink" title="正式版和快照版"></a>正式版和快照版</h2><p>maven仓库通常分为snapshot快照仓库和release发布仓库，snapshot快照仓库用于保存开发过程中的不稳定版本，release正式仓库则是用来保存稳定的发行版本。具体到名称，只需要在该模块的版本号后加上-SNAPSHOT即可(大写)。maven仓库的管理允许统一版本名的快照包重复更新，但是对于发布版本则不允许修改，必须升级版本号。</p>
+<h2 id="A-B-C"><a href="#A-B-C" class="headerlink" title="A.B.C"></a>A.B.C</h2><p>对于SDK的管理者而言，一个规范合理的版本号控制流程是很重要的。通常业内的做法是A.B.C的做法，</p>
+<p>A代表大版本号，大版本号的变动通常意味着非常大幅度的升级，甚至可以不保证向低版本兼容。例如著名的异步流编程API，ReactiveX，1.x版本和2.x版本有相当多的改变，1.x的某些写法在2.x版本中已经是不兼容了。这个大版本号很适合做SDK的大幅重构，重大基础库的迁移等，例如从Android Support库转而采用Android-X库。</p>
+<p>B代表中版本号，也是我们日常发版升级对应的版本号，例如1.0.0 -&gt; 1.1.0类似如此的升级。</p>
+<p>C代表的是小版本号，目的是在版本之间，处理因为bug修复等情况的临时版本，例如1.0.0版本发布后，发现了一个重要bug，这是可以发布1.0.1这样的版本来修复问题。</p>
+<h2 id="版本号管理的烦恼"><a href="#版本号管理的烦恼" class="headerlink" title="版本号管理的烦恼"></a>版本号管理的烦恼</h2><p>那我们说，版本号的烦恼在哪里呢？根据我自己的日常开发经验，可能有这么几处：</p>
+<ul>
+<li><p>缺少版本上传的历史记录，这一点可以说是很多SDK的痛点了，回顾某个很久之前发布的版本，忘记打tag，还原不了当时的代码情况。某个成员意外的执行上传任务，覆盖掉了原本的包，引入了包含bug甚至是编译不过的代码。</p>
+</li>
+<li><p>版本号的唯一性，在开发中我们通常会先集成快照包来开发和提测，在上线前某个时刻替换成正式版本。而快照包的依赖存在一些问题，例如，Android Studio的gradle缓存问题，有时候明明已经上传最新的快照包，但是IDE就是不更新。每次手动修改版本号，且不说麻烦，还没办法对应的上git提交记录。</p>
+</li>
+</ul>
+<p>那么有什么好办法处理这些问题呢？</p>
+<h1 id="自动管理版本号的Gradle插件"><a href="#自动管理版本号的Gradle插件" class="headerlink" title="自动管理版本号的Gradle插件"></a>自动管理版本号的Gradle插件</h1><p>我这里的处理方式是自己写一个简单的gradle插件，用来自动管理SDK上传Maven仓库时的版本号。</p>
+<h2 id="插件功能的设计"><a href="#插件功能的设计" class="headerlink" title="插件功能的设计"></a>插件功能的设计</h2><p>首先我们希望每次上传新包到Maven仓库，能够记录一下上传记录，包括：上传人，上传时间，上传的版本号, 当前的分支名，最后一次提交的commit messgae等等</p>
+<p>其次，版本名上我们希望附带两个功能，一个是指定是否为快照包，自动的在版本号后面加上-SNAPSHOT。一个是可以选择在版本号后面跟上唯一性的id。</p>
+<h2 id="Gradle插件的开发"><a href="#Gradle插件的开发" class="headerlink" title="Gradle插件的开发"></a>Gradle插件的开发</h2><h3 id="Gradle插件开发"><a href="#Gradle插件开发" class="headerlink" title="Gradle插件开发"></a>Gradle插件开发</h3><p>首先是如何开发Gradle插件，这里我推荐这篇文章<a href="https://www.jianshu.com/p/3191c3955194" target="_blank" rel="noopener">Gradle插件开发指南</a><br>。这里我们开发一个独立的gradle插件项目，并上传到maven仓库中。</p>
+<h3 id="新建Gradle插件工程"><a href="#新建Gradle插件工程" class="headerlink" title="新建Gradle插件工程"></a>新建Gradle插件工程</h3><p>Gradle插件的开发建议选择Intellij IEAD, 通过创建Gradle项目即可，语言我这里指定Groovy, 其实Java或者Kotlin甚至是Scala都是可以的。</p>
+<p><img src="/img/2019-11-06-gradle-plugin-for-auto-version-01.png" alt></p>
+<p>接着设置好gradle项目需要的GroupId, ArtifactId和Version信息，创建好工程。此时工程目录结构：</p>
+<p><img src="/img/2019-11-06-gradle-plugin-for-auto-version-02.png" alt></p>
+<p>其中groovy目录用来存放groovy代码，java目录存放java代码，resources目录用来声明当前项目所需的资源，后面我们介绍。其中的build.gradle文件看起来是这样：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    id <span class="string">'groovy'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group <span class="string">'xxx.xxxx'</span></span><br><span class="line">version <span class="string">'1.0-SNAPSHOT'</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile <span class="string">'org.codehaus.groovy:groovy-all:2.3.11'</span></span><br><span class="line">    testCompile <span class="string">group:</span> <span class="string">'junit'</span>, <span class="string">name:</span> <span class="string">'junit'</span>, <span class="string">version:</span> <span class="string">'4.12'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果想用Android Studio来创建Gradle工程的话，可能会麻烦一些，在一个Android工程中，选择新建 Java Library module “plugin”，然后手动删除掉不需要的目录和文件，手动新建resources目录。</p>
+<h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><p>首先是Gradle插件开发的模版套路，实现Plugin<project>接口，其中需要实现apply方法</project></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AutoVersionPlugin</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">void</span> apply(Project project) &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着在resources文件夹下新建目录及文件：META-INF/gradle-plugins/auto_version_plugin.properties</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//xxx对应着AutoVersionPlugin的完整包名</span></span><br><span class="line">implementation-<span class="class"><span class="keyword">class</span>=<span class="title">xxx</span>.<span class="title">AutoVersionPlugin</span></span></span><br></pre></td></tr></table></figure>
+
+<p>到这一步，Gradle的壳就搭建起来了，接下来我们需要写业务逻辑：</p>
+<p>第一步我们需要捕获maven插件的uploadArchives的task, 这里需要注意到的一点是uploadArchives属于工程的自定义task，而自定义task需要在工程的after evaluate执行完之后才能拿的到:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">project.afterEvaluate &#123;</span><br><span class="line">    <span class="comment">//Only after evaluate, we can find custom tasks</span></span><br><span class="line">    Task uploadTask = it.tasks.findByPath(<span class="string">"$&#123;it.path&#125;:uploadArchives"</span>)</span><br><span class="line">    uploadTask.doFirst &#123;</span><br><span class="line">        <span class="comment">//在uploadArchives Task执行之前做一些事</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好的，有了这一步的基础，我们接下来尝试定义gradle插件中可以用的DSL。首先我们定义DSL字段：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AutoVersion</span> &#123;</span></span><br><span class="line">    String version = <span class="string">''</span></span><br><span class="line">    String fixVersion = <span class="string">''</span></span><br><span class="line">    <span class="keyword">boolean</span> isSnapShot = <span class="literal">true</span></span><br><span class="line">    String gitPath = <span class="string">''</span></span><br><span class="line">    <span class="keyword">boolean</span> needFileLog = <span class="literal">false</span></span><br><span class="line">    String logFilePath</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应着实际调用就类似于：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">autoVersion &#123;</span><br><span class="line">    version <span class="string">'1.0.0'</span></span><br><span class="line">    fixVersion <span class="string">'1.1.0-SNAPSHOT'</span></span><br><span class="line">    isSnapShot <span class="literal">true</span></span><br><span class="line">    needFileLog <span class="literal">true</span></span><br><span class="line">    logFilePath rootProject.projectDir.absolutePath + File.separator + <span class="string">'xxx'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着我们只需要，在Plugin的apply方法中创建对应的DSL即可：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AutoVersionPlugin</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">void</span> apply(Project project) &#123;</span><br><span class="line">        AutoVersion autoVersion = project.getExtensions().create(<span class="string">"autoVersion"</span>, AutoVersion.<span class="keyword">class</span>)</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上我们的准备工作ok了，接下来我们需要处理两个问题，如何修改uploadArchives中的版本号参数，以及如何获取当前工程git信息。</p>
+<p>首先是处理uploadArchives，这个借助gradle的api就可以处理</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//将Task uploadTask强转为Upload即可</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">def</span> changeUploadTaskVersion(Upload uploadTask, String version) &#123;</span><br><span class="line">        <span class="keyword">def</span> deployer = uploadTask.repositories.getByName(<span class="string">"mavenDeployer"</span>) <span class="keyword">as</span> DefaultGroovyMavenDeployer</span><br><span class="line">        deployer.pom.version = version</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其次是Git信息的获取，这里我们引入第三方库来帮助我们处理：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.eclipse.jgit:org.eclipse.jgit:5.4.0.201906121030-r'</span></span><br></pre></td></tr></table></figure>
+
+<p>这里我封装了GitInfo类，通过传入Git的路径，可以自动获取当前用户名，分支名，commit提交id和log记录等信息。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GitInfo</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Git mGit</span><br><span class="line">    <span class="keyword">private</span> Repository mRepository</span><br><span class="line"></span><br><span class="line">    GitInfo(String gitPath) &#123;</span><br><span class="line">        String path = <span class="string">"$&#123;gitPath&#125;$&#123;File.separator&#125;.git"</span></span><br><span class="line">        File repoDir = <span class="keyword">new</span> File(path)</span><br><span class="line">        <span class="keyword">if</span> (!repoDir.exists()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">'no git info'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        FileRepositoryBuilder builder = <span class="keyword">new</span> FileRepositoryBuilder()</span><br><span class="line">        mRepository = builder.setGitDir(repoDir)</span><br><span class="line">                .readEnvironment() <span class="comment">// scan environment GIT_* variables</span></span><br><span class="line">                .findGitDir() <span class="comment">// scan up the file system tree</span></span><br><span class="line">                .build()</span><br><span class="line">        mGit = <span class="keyword">new</span> Git(mRepository)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String name() &#123;</span><br><span class="line">        Config config = mRepository.getConfig()</span><br><span class="line">        <span class="keyword">return</span> config.getString(<span class="string">"user"</span>, <span class="literal">null</span>, <span class="string">"name"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String branch() &#123;</span><br><span class="line">        <span class="keyword">return</span> mRepository.branch</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String commitId() &#123;</span><br><span class="line">        Iterable&lt;RevCommit&gt; logs = mGit.log().call()</span><br><span class="line">        Iterator&lt;RevCommit&gt; iterator = logs.iterator()</span><br><span class="line">        <span class="keyword">if</span> (!iterator.hasNext()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"no_commit_id"</span></span><br><span class="line">        &#125;</span><br><span class="line">        RevCommit revCommit = iterator.next()</span><br><span class="line">        <span class="keyword">if</span> (revCommit == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"no_commit_id"</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> revCommit.name</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String shortCommitId() &#123;</span><br><span class="line">        Iterable&lt;RevCommit&gt; logs = mGit.log().call()</span><br><span class="line">        Iterator&lt;RevCommit&gt; iterator = logs.iterator()</span><br><span class="line">        <span class="keyword">if</span> (!iterator.hasNext()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"no_commit_id"</span></span><br><span class="line">        &#125;</span><br><span class="line">        RevCommit revCommit = iterator.next()</span><br><span class="line">        <span class="keyword">if</span> (revCommit == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"no_commit_id"</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> revCommit.name.substring(<span class="number">0</span>, <span class="number">7</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String lastLog() &#123;</span><br><span class="line">        Iterable&lt;RevCommit&gt; logs = mGit.log().call()</span><br><span class="line">        Iterator&lt;RevCommit&gt; iterator = logs.iterator()</span><br><span class="line">        <span class="keyword">if</span> (!iterator.hasNext()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"message"</span></span><br><span class="line">        &#125;</span><br><span class="line">        RevCommit revCommit = iterator.next()</span><br><span class="line">        <span class="keyword">if</span> (revCommit == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"message"</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> revCommit.shortMessage</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其他的部分例如如何写文件，逻辑判断等这里就不多说了。</p>
+<h2 id="上传插件及使用"><a href="#上传插件及使用" class="headerlink" title="上传插件及使用"></a>上传插件及使用</h2><p>上传方式之前就介绍过了，使用起来也很简单,在Android工程的根目录的build.gradle中，首先引入我们上传的插件：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath <span class="string">'$&#123;your group id&#125;:auto-version:$&#123;your version&#125;'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其次找到需要上传的模块所在的build.gradle文件，假设这里已经引入了maven插件并配置了uploadArchives task,<br>我们引入我们的auto-version plugin</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">'auto_version_plugin'</span></span><br><span class="line"></span><br><span class="line">autoVersion &#123;</span><br><span class="line">    version <span class="string">'1.0.0'</span></span><br><span class="line">    fixVersion <span class="string">'1.1.0-SNAPSHOT'</span></span><br><span class="line">    isSnapShot <span class="literal">true</span></span><br><span class="line">    needFileLog <span class="literal">true</span></span><br><span class="line">    logFilePath rootProject.projectDir.absolutePath + File.separator + <span class="string">'xxx'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，上传maven任务和此前就一样，执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle uploadArchives</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本篇介绍了如何开发一个独立的gradle插件，来协助管理maven发布的版本号和记录发布信息。不足之处，多多包涵。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+          
+            <a href="/tags/Maven/" rel="tag"># Maven</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/08/android-handler/" rel="next" title="Android的消息机制">
+                <i class="fa fa-chevron-left"></i> Android的消息机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#通过Maven管理SDK包"><span class="nav-number">1.</span> <span class="nav-text">通过Maven管理SDK包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#三类第三方库"><span class="nav-number">1.1.</span> <span class="nav-text">三类第三方库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gradle支持对maven仓库包依赖"><span class="nav-number">1.2.</span> <span class="nav-text">Gradle支持对maven仓库包依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maven插件上传SDK"><span class="nav-number">1.3.</span> <span class="nav-text">maven插件上传SDK</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDK版本号"><span class="nav-number">2.</span> <span class="nav-text">SDK版本号</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#正式版和快照版"><span class="nav-number">2.1.</span> <span class="nav-text">正式版和快照版</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-B-C"><span class="nav-number">2.2.</span> <span class="nav-text">A.B.C</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本号管理的烦恼"><span class="nav-number">2.3.</span> <span class="nav-text">版本号管理的烦恼</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自动管理版本号的Gradle插件"><span class="nav-number">3.</span> <span class="nav-text">自动管理版本号的Gradle插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#插件功能的设计"><span class="nav-number">3.1.</span> <span class="nav-text">插件功能的设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gradle插件的开发"><span class="nav-number">3.2.</span> <span class="nav-text">Gradle插件的开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Gradle插件开发"><span class="nav-number">3.2.1.</span> <span class="nav-text">Gradle插件开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建Gradle插件工程"><span class="nav-number">3.2.2.</span> <span class="nav-text">新建Gradle插件工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现功能"><span class="nav-number">3.2.3.</span> <span class="nav-text">实现功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传插件及使用"><span class="nav-number">3.3.</span> <span class="nav-text">上传插件及使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
