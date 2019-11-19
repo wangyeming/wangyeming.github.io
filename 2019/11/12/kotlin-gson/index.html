@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Kotlin,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="田野光的技术小站" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Kotlin作为Android的官方开发语言已经有一段时间了，在项目过程中总结了一些Kotlin下处理Json的经验，记录下来和大家分享。">
+<meta name="keywords" content="Android,Kotlin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin下的Gson解析Json数据">
+<meta property="og:url" content="http://wangyeming.github.com/2019/11/12/kotlin-gson/index.html">
+<meta property="og:site_name" content="田野光的技术小站">
+<meta property="og:description" content="Kotlin作为Android的官方开发语言已经有一段时间了，在项目过程中总结了一些Kotlin下处理Json的经验，记录下来和大家分享。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-19T07:30:24.597Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin下的Gson解析Json数据">
+<meta name="twitter:description" content="Kotlin作为Android的官方开发语言已经有一段时间了，在项目过程中总结了一些Kotlin下处理Json的经验，记录下来和大家分享。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangyeming.github.com/2019/11/12/kotlin-gson/">
+
+
+
+
+
+  <title>Kotlin下的Gson解析Json数据 | 田野光的技术小站</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">田野光的技术小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wangyeming.github.com/2019/11/12/kotlin-gson/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="田野光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="田野光的技术小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin下的Gson解析Json数据</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-12T19:42:46+08:00">
+                2019-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Kotlin作为Android的官方开发语言已经有一段时间了，在项目过程中总结了一些Kotlin下处理Json的经验，记录下来和大家分享。</p>
+<a id="more"></a>
+
+<h1 id="Kotlin的数据类"><a href="#Kotlin的数据类" class="headerlink" title="Kotlin的数据类"></a>Kotlin的数据类</h1><p>Kotlin中，有一种只保存数据的类，称作<a href="https://www.kotlincn.net/docs/reference/data-classes.html" target="_blank" rel="noopener">数据类</a>。关键字是class前加一个data。例如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(<span class="keyword">val</span> name: String, <span class="keyword">val</span> age: <span class="built_in">Int</span>)</span><br></pre></td></tr></table></figure>
+
+<p>一切看起来很美好，接触过Kotlin的同学肯定知道，普通类下的var变量或val常量，都会有恼人的初始化提示，尤其是类的成员变量(var)，如果不给予初始化赋值，那么就需要手动添加lateinit关键字，如果初始化null，那么类型就变成了xx?, 对于Bean类而言，这些都是累赘。Data类正好解决了我们的问题。但是Kotlin的Data类在搭配Gson使用时，真的那么美好吗？看下一个问题。</p>
+<h1 id="Data-class的字段可否为空的问题"><a href="#Data-class的字段可否为空的问题" class="headerlink" title="Data class的字段可否为空的问题"></a>Data class的字段可否为空的问题</h1><p>首先我们来看一个例子：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">    <span class="keyword">val</span> name: String, </span><br><span class="line">    <span class="keyword">val</span> age: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="keyword">val</span> <span class="keyword">data</span>: List&lt;String&gt;</span><br><span class="line">) &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">toString</span><span class="params">()</span></span>: String &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"User(name='<span class="variable">$name</span>', age=<span class="variable">$age</span>, data=<span class="variable">$data</span>)"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们看到，name,age,data 我们都申明为非空，但是实际上，这样的申明是没有多大用处的，举个最简单的例子：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println(Gson().fromJson("", User::class.java))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User(name=&apos;null&apos;, age=0, data=null)</span><br></pre></td></tr></table></figure>
+
+<p>显然，除了Int类型的age之外，其它两个变量全都是null，这样Kotlin赋予的空指针检查也就无法使用了。</p>
+<p>那么一种方式是我们把字段申明为可空，也就是：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">    <span class="keyword">val</span> name: String?, </span><br><span class="line">    <span class="keyword">val</span> age: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="keyword">val</span> <span class="keyword">data</span>: List&lt;String&gt;?</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这是一种思路，但很多时候我们希望能设置一个默认值，于是我们按照Java的写法，尝试字符串默认值为空；</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">    <span class="keyword">val</span> name: String = <span class="string">""</span>, </span><br><span class="line">    <span class="keyword">val</span> age: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="keyword">val</span> <span class="keyword">data</span>: List&lt;String&gt;?</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>还是上面的例子，</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println(Gson().fromJson("", User::class.java))</span><br></pre></td></tr></table></figure>
+
+<p>结果输出的是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User(name=&apos;null&apos;, age=0, data=null)</span><br></pre></td></tr></table></figure>
+
+<p>居然没有生效，name原本的默认空值也被覆盖为null了, 这个问题网上也讨论了很多，其实是Gson这个库的处理方式导致的，在Gson的fromJson方法中，最终会尝试通过反射的方式，获取对象的无参构造函数去创建对象。简单来说，我们这里的User类，实际上他的构造函数有两个，分别是：</p>
+<p>User(age: Int, data: List<string>)<br>User(name: String, age: Int,data: List<string>)</string></string></p>
+<p>而显然，并没有无参的构造函数，而Gson这里的反射构造对象，会绕过构造函数，只会在堆中去分配一个对象实例。</p>
+<p>解决方式目前来看，就是如果需要默认值，那么所有参数都设置默认值：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">    <span class="keyword">val</span> name: String = <span class="string">""</span>, </span><br><span class="line">    <span class="keyword">val</span> age: <span class="built_in">Int</span> = <span class="number">0</span>,</span><br><span class="line">    <span class="keyword">val</span> <span class="keyword">data</span>: List&lt;String&gt;? = <span class="literal">null</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这样User相当于有一个User()的无参构造函数了，这样我们的初始化配置也会生效。</p>
+<p>具体可以参考这篇博客：<a href="https://extremej.itscoder.com/gson_kotlin_data_class/" target="_blank" rel="noopener">Gson 反序列化 Kotlin 数据类默认值失效</a></p>
+<h1 id="Json序列化空字符串如何当做null处理？"><a href="#Json序列化空字符串如何当做null处理？" class="headerlink" title="Json序列化空字符串如何当做null处理？"></a>Json序列化空字符串如何当做null处理？</h1><p>某些时候我们在将对象转成Json String的过程中，需要特别处理某些空字符串。例如拼接到url后面的参数，如果字符串为空，就不拼到参数当中。例如:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Params</span></span>(</span><br><span class="line">    <span class="keyword">val</span> p1: String = <span class="string">""</span>, </span><br><span class="line">    <span class="keyword">val</span> p2: String = <span class="string">""</span>,</span><br><span class="line">    <span class="keyword">val</span> p3: String? = <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> params = Params(<span class="string">"p1"</span>, <span class="string">""</span>, <span class="literal">null</span>)</span><br><span class="line">println(Gson().toJson(params))</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//预期</span><br><span class="line">&#123;&quot;p1&quot;:&quot;p1&quot;&#125;</span><br><span class="line">//实际</span><br><span class="line">&#123;&quot;p1&quot;:&quot;p1&quot;,&quot;p2&quot;:&quot;&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里其实是可以通过自定义序列化的方式来解决的，也就是将空字符串当做null来处理：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmptyStringAsNullTypeAdapter</span>: <span class="type">JsonSerializer</span>&lt;<span class="type">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">serialize</span><span class="params">(src: <span class="type">String</span>?, typeOfSrc: <span class="type">Type</span>?, context: <span class="type">JsonSerializationContext</span>?)</span></span>: JsonElement &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">if</span> (TextUtils.isEmpty(src)) &#123;</span><br><span class="line">            JsonNull.INSTANCE</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            JsonPrimitive(src.toString())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> paramsGson = GsonBuilder()</span><br><span class="line">            .registerTypeAdapter(String::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>, <span class="type">EmptyStringAsNullTypeAdapter</span></span>())</span><br><span class="line">            .create()</span><br><span class="line">println(paramsGson.toJson(params))</span><br></pre></td></tr></table></figure>
+
+<h1 id="如何统一过滤Array中的null元素"><a href="#如何统一过滤Array中的null元素" class="headerlink" title="如何统一过滤Array中的null元素?"></a>如何统一过滤Array中的null元素?</h1><p>数组里的null元素是一个很坑的事情，通常情况下，除非后台在数组中明确返回了null元素之外，是不太可能在数组中存在null的。例如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">    <span class="keyword">val</span> <span class="keyword">data</span>: List&lt;String&gt;? = <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> str = <span class="string">"&#123;\"data\": [null, \"s1\"]&#125;"</span></span><br><span class="line">println(Gson().fromJson(str, User::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//输出 User(name='', age=0, data=[null, s1])</span></span><br></pre></td></tr></table></figure>
+
+<p>显然，在每个数组的声明中都申明为可空想想就是件麻烦的事，而且读取的时候额外的元素判空也是很恶心的一件事。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">    <span class="keyword">val</span> data1: List&lt;String?&gt;? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> data2: List&lt;String?&gt;? = <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">val</span> data3: List&lt;String?&gt;? = <span class="literal">null</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>当然我们尽量希望后台不要传null在数组中，但有的时候无法避免这种情况，该怎么处理呢？针对这种反序列化的情况，我们需要自定义JsonDeserializer</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RemoveNullListDeserializer</span>&lt;<span class="type">T</span>&gt; : <span class="type">JsonDeserializer</span>&lt;<span class="type">List&lt;T</span>&gt;&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">deserialize</span><span class="params">(json: <span class="type">JsonElement</span>, typeOfT: <span class="type">Type</span>, context: <span class="type">JsonDeserializationContext</span>)</span></span>: List&lt;T&gt; &#123;</span><br><span class="line">        <span class="comment">//替换 Gson().fromJson(json, typeOff)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着问题来了，我们来看一下下面这个做法，能否满足我们的需求吗？</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RemoveNullListDeserializer</span>&lt;<span class="type">T</span>&gt; : <span class="type">JsonDeserializer</span>&lt;<span class="type">List&lt;T</span>&gt;&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Throws(JsonParseException::class)</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">deserialize</span><span class="params">(json: <span class="type">JsonElement</span>, typeOfT: <span class="type">Type</span>, context: <span class="type">JsonDeserializationContext</span>)</span></span>: List&lt;T&gt; &#123;</span><br><span class="line">        <span class="keyword">val</span> jsonArray = JsonArray()</span><br><span class="line">        <span class="keyword">for</span> (jsonElement <span class="keyword">in</span> json.asJsonArray) &#123;</span><br><span class="line">            <span class="keyword">if</span> (jsonElement.isJsonNull) &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            jsonArray.add(jsonElement)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Gson().fromJson(jsonArray, typeOfT)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的做法是将当前JsonArray中的null元素移除，但其实这样做是不够的，举个例子大家就明白了</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span></span>(</span><br><span class="line">    <span class="keyword">val</span> list1: List&lt;String&gt;,</span><br><span class="line">    <span class="keyword">val</span> b: B,</span><br><span class="line">    <span class="keyword">val</span> list2: List&lt;C&gt;</span><br><span class="line">) </span><br><span class="line"></span><br><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span></span>(</span><br><span class="line">    <span class="keyword">val</span> values: List&lt;<span class="built_in">Int</span>&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span></span>(</span><br><span class="line">    <span class="keyword">val</span> values: List&lt;<span class="built_in">Int</span>&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> gson = GsonBuilder()</span><br><span class="line">        .registerTypeAdapter(List::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>, <span class="type">RemoveNullListDeserializer</span>&lt;<span class="type">Any</span>&gt;</span>())</span><br><span class="line">        .create()</span><br><span class="line"><span class="keyword">val</span> a = gson.fromGson(jsonStr, A::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>我们这里注册的反序列化的方法，实际上只针对A.list1、A.list2和A.b.values三个元素生效，而A.list2.values是没办法接管到的。原因在于C的values的反序列化在注册的时候被更高层的List<c>覆盖了。所以我这里的处理方式是：</c></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RemoveNullListDeserializer</span>&lt;<span class="type">T</span>&gt; : <span class="type">JsonDeserializer</span>&lt;<span class="type">List&lt;T</span>&gt;&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Throws(JsonParseException::class)</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">deserialize</span><span class="params">(json: <span class="type">JsonElement</span>, typeOfT: <span class="type">Type</span>, context: <span class="type">JsonDeserializationContext</span>)</span></span>: List&lt;T&gt; &#123;</span><br><span class="line">        removeNullEleInArray(json)</span><br><span class="line">        <span class="keyword">return</span> Gson().fromJson(json, typeOfT)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">removeNullEleInArray</span><span class="params">(json: <span class="type">JsonElement</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (json.isJsonArray) &#123;</span><br><span class="line">            <span class="keyword">val</span> jsonArray = json.asJsonArray</span><br><span class="line">            <span class="keyword">var</span> i = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> (i &lt; jsonArray.size()) &#123;</span><br><span class="line">                <span class="keyword">val</span> ele = jsonArray.<span class="keyword">get</span>(i)</span><br><span class="line">                <span class="keyword">if</span> (ele.isJsonNull) &#123;</span><br><span class="line">                    jsonArray.remove(i)</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                &#125;</span><br><span class="line">                removeNullEleInArray(ele)</span><br><span class="line">                i++</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (json.isJsonObject) &#123;</span><br><span class="line">            <span class="keyword">val</span> jsonObject = json.asJsonObject</span><br><span class="line">            jsonObject.entrySet()</span><br><span class="line">                .filter &#123;</span><br><span class="line">                    it.value.isJsonArray || it.value.isJsonObject</span><br><span class="line">                &#125;</span><br><span class="line">                .forEach &#123;</span><br><span class="line">                    removeNullEleInArray(it.value)</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Gson中，抽象类JsonElement一共有四种类型，分别是JsonObject, JsonArray, JsonPrimitive, JsonNull.<br>可能存在数组的地方只可能是JsonArray或JsonObject。这里用了简单的递归，在反序列化数据之前，手动遍历所有可能存在的List，删除null元素。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Kotlin的数据类为我们定义数据类型的类提供了便利的同时，搭配Gson使用的时候,因为Gson采用了反射的方法获取默认的无参构造函数创建对象，如果没有无参构造函数的话，则通过反射直接绕过了构造函数创建对象，所以如果想让默认值生效，则必须提供无参的构造函数。而提供无参的构造函数的本身其实在开发上增加了负担。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/06/gradle-plugin-for-auto-version/" rel="next" title="自动生成SDK 上传Maven仓库的版本号插件">
+                <i class="fa fa-chevron-left"></i> 自动生成SDK 上传Maven仓库的版本号插件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">田野光</p>
+              <p class="site-description motion-element" itemprop="description">安卓开发</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wangyeming" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/3941809/lovefish" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kotlin的数据类"><span class="nav-number">1.</span> <span class="nav-text">Kotlin的数据类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data-class的字段可否为空的问题"><span class="nav-number">2.</span> <span class="nav-text">Data class的字段可否为空的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Json序列化空字符串如何当做null处理？"><span class="nav-number">3.</span> <span class="nav-text">Json序列化空字符串如何当做null处理？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何统一过滤Array中的null元素"><span class="nav-number">4.</span> <span class="nav-text">如何统一过滤Array中的null元素?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">田野光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
